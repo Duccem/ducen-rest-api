@@ -1,9 +1,10 @@
-import axios, { AxiosRequestConfig } from "axios";
+import axios from "axios";
 import { dataURL } from "../keys";
-// start the db connection
 
 /**
- * Class that work as interface of comunication of data interface
+ * Class that work as interface of comunication of data interface.
+ * This class can list, get, insert, update, remove and count the records of an entity,
+ * also can get and count the records of an entity on function of other.
  */
 export class Consulter {
 	/**
