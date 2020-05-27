@@ -7,6 +7,8 @@ import { dataURL } from "../keys";
  * also can get and count the records of an entity on function of other.
  */
 export class Consulter {
+	constructor(private engine: string = "mysql") {}
+
 	/**
 	 * This function get all of the elements on the table
 	 * @param model  model of the table
@@ -17,7 +19,7 @@ export class Consulter {
 	 */
 	public async list(model: string, query: any): Promise<any> {
 		try {
-			let { data } = await axios.get(`${dataURL}/mysql/${model}`, {
+			let { data } = await axios.get(`${dataURL}/${this.engine}/${model}`, {
 				params: query,
 			});
 			return data;
@@ -38,7 +40,7 @@ export class Consulter {
 	 */
 	public async get(model: string, id: string | number, query: any): Promise<any> {
 		try {
-			let { data } = await axios.get(`${dataURL}/mysql/${model}/${id}`, {
+			let { data } = await axios.get(`${dataURL}/${this.engine}/${model}/${id}`, {
 				params: query,
 			});
 			return data;
@@ -60,7 +62,7 @@ export class Consulter {
 	 */
 	public async filter(model: string, id: string | number, other: string, query: any): Promise<any> {
 		try {
-			let { data } = await axios.get(`${dataURL}/mysql/${model}/${id}/${other}`, {
+			let { data } = await axios.get(`${dataURL}/${this.engine}/${model}/${id}/${other}`, {
 				params: query,
 			});
 			return data;
@@ -76,7 +78,7 @@ export class Consulter {
 	 */
 	public async query(sql: string): Promise<any> {
 		try {
-			let { data } = await axios.post(`${dataURL}/mysql/query`, { sql: sql });
+			let { data } = await axios.post(`${dataURL}/${this.engine}/query`, { sql: sql });
 			return data;
 		} catch (error) {
 			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
@@ -91,7 +93,7 @@ export class Consulter {
 	 */
 	public async insert(model: string, object: any): Promise<any> {
 		try {
-			let { data } = await axios.post(`${dataURL}/mysql/${model}/`, {
+			let { data } = await axios.post(`${dataURL}/${this.engine}/${model}/`, {
 				data: object,
 			});
 			return data;
@@ -108,7 +110,7 @@ export class Consulter {
 	 */
 	public async inserts(model: string, array: any): Promise<any> {
 		try {
-			let { data } = await axios.post(`${dataURL}/mysql/${model}/many`, {
+			let { data } = await axios.post(`${dataURL}/${this.engine}/${model}/many`, {
 				data: array,
 			});
 			return data;
@@ -126,7 +128,7 @@ export class Consulter {
 	 */
 	public async upsert(model: string, id: string | number, object: any): Promise<any> {
 		try {
-			let { data } = await axios.post(`${dataURL}/mysql/${model}/${id}`, {
+			let { data } = await axios.post(`${dataURL}/${this.engine}/${model}/${id}`, {
 				data: object,
 			});
 			return data;
@@ -143,7 +145,7 @@ export class Consulter {
 	 */
 	public async remove(model: string, id: string | number): Promise<any> {
 		try {
-			let { data } = await axios.delete(`${dataURL}/mysql/${model}/${id}`);
+			let { data } = await axios.delete(`${dataURL}/${this.engine}/${model}/${id}`);
 			return data;
 		} catch (error) {
 			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
@@ -157,7 +159,7 @@ export class Consulter {
 	 */
 	public async count(model: string): Promise<any> {
 		try {
-			let { data } = await axios.get(`${dataURL}/mysql/count/${model}`);
+			let { data } = await axios.get(`${dataURL}/${this.engine}/count/${model}`);
 			return data;
 		} catch (error) {
 			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
@@ -173,7 +175,7 @@ export class Consulter {
 	 */
 	public async filterCount(model: string, other: string, id: string | number): Promise<number> {
 		try {
-			let { data } = await axios.get(`${dataURL}/mysql/count/${model}/${id}/${other}`);
+			let { data } = await axios.get(`${dataURL}/${this.engine}/count/${model}/${id}/${other}`);
 			return data;
 		} catch (error) {
 			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
