@@ -7,10 +7,10 @@ export class APIController {
 	protected endpoint: string;
 	protected consult: Consulter;
 
-	constructor(model: string, endpoint: string) {
+	constructor(model: string, endpoint: string, engine?: string) {
 		this.model = model;
 		this.endpoint = endpoint;
-		this.consult = new Consulter();
+		this.consult = new Consulter(engine);
 	}
 
 	/**

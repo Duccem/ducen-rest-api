@@ -2,23 +2,21 @@ const { database } = require('../keys');
 const { createPool } = require('mysql2/promise');
 const chalk = require('chalk');
 
-var connection;
-
-function connect(data) {
-    if(!data)
-        data = database;
-    try {
-        connection = createPool(data);
-        if (connection) console.log(`${chalk.green('[DATABASE]')} connected to ${data.database} database`);
-        return connection;
-    } catch (error) {
-        console.log(`${chalk.red('[ERROR]')} ${error}`)
-        return null;
+/**
+ * The Database class
+ * Used to manage the driver to connect to database engine MySQL
+ */
+class Database {
+    constructor(data = null) {
+        let configuration = data || database;
+        try {
+            this.connection = createPool(configuration);
+            if (this.connection) console.log(`${chalk.green('[DATABASE]')} connected to ${configuration.database} database`);
+        } catch (error) {
+            console.log(`${chalk.red('[ERROR]')} ${error}`)
+            this.connection = null;
+        }
     }
 }
 
-async function disconnect() {
-    await connection.end();
-}
-
-module.exports = {  connect, disconnect };
+module.exports = Database;

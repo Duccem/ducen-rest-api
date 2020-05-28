@@ -1,21 +1,22 @@
 const chalk = require('chalk');
 
-const { connect } = require('./database');
-const { selectSQL, selectSQLOne, selectByFilter, makeInsert } = require('./querys');
-var connection = connect();
+const Database = require('./database');
+const Query = require('./querys');
+const db = new Database();
+const querys = new Query();
 
 /**
  * This function get all of the elements on the table
  * @param {string} model  model of the table 
- * @param {JSON} query paramaters to modify the consult
+ * @param {Object} query paramaters to modify the consult
  * ```
  * query:{fields:'id', limit:50, offset:0, order:'asc', orderField:'id'}
  * ``` 
  */
 async function get(model, query) {
-    let sql = selectSQL(query, model);
+    let sql = querys.selectSQL(query, model);
     try {
-        let data = await connection.query(sql);
+        let data = await db.connection.query(sql);
         let response = JSON.parse(JSON.stringify(data[0]));
         return response;
     } catch (error) {
@@ -23,11 +24,11 @@ async function get(model, query) {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        if(error.code === 'ER_NO_SUCH_TABLE'){
+        if (error.code === 'ER_NO_SUCH_TABLE') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
             throw new Error('BD_TABLE_ERROR');
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`Error en conexion db.connection la BD, error: ${error}`);
     }
 }
 
@@ -35,7 +36,7 @@ async function get(model, query) {
  * This function return the object especified if exist
  * @param {string} model model of the table
  * @param {number} id id of the register in the table
- * @param {JSON} query paramaters to modify the consult
+ * @param {Object} query paramaters to modify the consult
  * ```javascript
  *- query:{
  *-      fields:'id',
@@ -47,9 +48,9 @@ async function get(model, query) {
  * ```
  */
 async function getOne(model, id, query) {
-    let sql = selectSQLOne(id, query, model);
+    let sql = querys.selectSQLOne(id, query, model);
     try {
-        let data = await connection.query(sql);
+        let data = await db.connection.query(sql);
         if (!data[0][0]) return null;
         let response = JSON.parse(JSON.stringify(data[0][0]));
         return response;
@@ -58,7 +59,7 @@ async function getOne(model, id, query) {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`Error en conexion db.connection la BD, error: ${error}`);
     }
 }
 
@@ -67,58 +68,63 @@ async function getOne(model, id, query) {
  * @param {string} model model of the table
  * @param {number} id id of register in the table
  * @param {string} other model of the other entity
- * @param {JSON} query parameters to modify the consult
+ * @param {Object} query parameters to modify the consult
  * ```
  * query:{fields:'id', limit:50, offset:0, order:'asc', orderField:'id'}
  * ```
  */
 async function getOtherByMe(model, id, other, query) {
-    let sql = selectByFilter(query, other, model, id);
+    let sql = querys.selectByFilter(query, other, model, id);
     try {
-        let data = await connection.query(sql);
+        let data = await db.connection.query(sql);
         return data[0];
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`Error en conexion db.connection la BD, error: ${error}`);
     }
 }
 
 /**
  * This function create a new register in the bd
  * @param {string} model model of the table
- * @param {JSON} object the new object to introduce in the db
+ * @param {Object} object the new object to introduce in the db
  */
 async function create(model, object) {
     try {
-        let inserted = await connection.query(`INSERT INTO ${model} set ?`, [object]);
+        let inserted = await db.connection.query(`INSERT INTO ${model} set ?`, [object]);
         return inserted[0];
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`Error en conexion db.connection la BD, error: ${error}`);
     }
 }
 
-async function insertMany(model,array){
+/**
+ * Insert an array of objects on a table
+ * @param {string} model the table to insert 
+ * @param {Array} array the object of the data
+ */
+async function insertMany(model, array) {
     try {
         let arrVals = [];
         array.forEach(element => {
             arrVals.push(Object.values(element));
         });
-        let fields = makeInsert(array[0]);
-        let inserted = await connection.query(`INSERT INTO ${model} (${fields}) VALUES ?`, [arrVals]);
+        let fields = querys.makeInsert(array[0]);
+        let inserted = await db.connection.query(`INSERT INTO ${model} (${fields}) VALUES ?`, [arrVals]);
         return inserted[0];
     } catch (error) {
         if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`Error en conexion db.connection la BD, error: ${error}`);
     }
 }
 
@@ -126,18 +132,18 @@ async function insertMany(model,array){
  * This function update a register in the bd
  * @param {string} model model of the table
  * @param {number} id id of the register in the table
- * @param {JSON} object object to update in the db
+ * @param {Object} object object to update in the db
  */
 async function update(model, id, object) {
     try {
-        let updated = await connection.query(`UPDATE ${model} set ? WHERE id = ?`,[object,id]);
+        let updated = await db.connection.query(`UPDATE ${model} set ? WHERE id = ?`, [object, id]);
         return updated[0];
     } catch (error) {
-        if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2'){ 
+        if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR' || error.code === 'ER_NO_REFERENCED_ROW_2') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`Error en conexion db.connection la BD, error: ${error}`);
     }
 }
 
@@ -146,30 +152,30 @@ async function update(model, id, object) {
  * @param {string} model model of the table
  * @param {number} id id of the register
  */
-async function remove(model, id){
+async function remove(model, id) {
     try {
-        let deleted = await connection.query(`DELETE FROM ${model} WHERE id = ? `,[id]);
+        let deleted = await db.connection.query(`DELETE FROM ${model} WHERE id = ? `, [id]);
         return deleted;
     } catch (error) {
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
-    } 
+        throw new Error(`Error en conexion db.connection la BD, error: ${error}`);
+    }
 }
 
 /**
  * Execute a custom SQL sentence
  * @param {string} sql SQL sentence to execute
  */
-async function query(sql){
+async function query(sql) {
     try {
-        let data = await connection.query(sql);
+        let data = await db.connection.query(sql);
         return data[0];
     } catch (error) {
-        
-        if(error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR'){ 
+
+        if (error.code === 'ER_PARSE_ERROR' || error.code === 'ER_BAD_FIELD_ERROR') {
             console.log(`${chalk.red('[ERROR]')} ${error}`);
             throw new Error('BD_SYNTAX_ERROR');
         }
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`Error en conexion db.connection la BD, error: ${error}`);
     }
 }
 
@@ -177,13 +183,13 @@ async function query(sql){
  * This function return the total count of register in a table
  * @param {string} model model of the table
  */
-async function count(model){
+async function count(model) {
     try {
-        let count = await connection.query(`SELECT COUNT(id) as total FROM ${model}`);
+        let count = await db.connection.query(`SELECT COUNT(id) as total FROM ${model}`);
         let total = count[0][0].total;
         return total;
     } catch (error) {
-        throw new Error(`Error en conexion connection la BD, error: ${error}`);
+        throw new Error(`Error en conexion db.connection la BD, error: ${error}`);
     }
 }
 
@@ -193,28 +199,28 @@ async function count(model){
  * @param {number} id the id of the register
  * @param {string} other the other table
  */
-async function countOther(model, id, other){
+async function countOther(model, id, other) {
     try {
-        let count = await connection.query(`SELECT COUNT(id) as total FROM ${other} WHERE ${model}_id = ${id}`);
+        let count = await db.connection.query(`SELECT COUNT(id) as total FROM ${other} WHERE ${model}_id = ${id}`);
         let total = count[0][0].total;
         return total;
     } catch (error) {
-        throw new Error(`Error en conexion connection la BD, error: ${other}`);
+        throw new Error(`Error en conexion db.connection la BD, error: ${other}`);
     }
 }
 
 /**
  * Library responsible for handling database queries
  */
-module.exports = { 
-    get, 
-    getOne, 
-    getOtherByMe, 
+module.exports = {
+    get,
+    getOne,
+    getOtherByMe,
     create,
     insertMany,
-    update, 
-    remove, 
-    query, 
-    count, 
-    countOther 
+    update,
+    remove,
+    query,
+    count,
+    countOther
 };

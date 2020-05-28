@@ -1,6 +1,10 @@
-const app = require('./app');
-const chalk = require('chalk');
+const App = require('./app');
+const dotenv = require('dotenv');
+dotenv.config();
 
+function main() {
+    const app = new App();
+    app.listen();
+}
 
-app.listen(app.get('port'));
-console.log(`${chalk.yellow('[SERVER]')} running on port ${app.get('port')}`);
+main();
