@@ -1,8 +1,8 @@
 const chalk = require('chalk');
 
-const Database = require('./database');
+const { MySQLConnection } = require('./database');
 const Query = require('./querys');
-const db = new Database();
+const db = new MySQLConnection();
 const querys = new Query();
 
 /**

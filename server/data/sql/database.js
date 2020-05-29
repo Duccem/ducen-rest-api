@@ -6,7 +6,7 @@ const chalk = require('chalk');
  * The Database class
  * Used to manage the driver to connect to database engine MySQL
  */
-class Database {
+class MySQLConnection {
     constructor(data = null) {
         let configuration = data || database;
         try {
@@ -19,4 +19,4 @@ class Database {
     }
 }
 
-module.exports = Database;
+module.exports = { MySQLConnection };
