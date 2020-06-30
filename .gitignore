@@ -1,7 +1,9 @@
 node_modules
-.env
+dist
+tests
+.vscode
 public/pages/*
 public/images/*
-dist
-.vscode
+.env
+package-lock.json
 db.json
