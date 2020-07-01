@@ -4,11 +4,11 @@
 	"description": "API de conexion entre las aplicaciones de la suite de administracion y la base de datos madre",
 	"main": "./dist/index.js",
 	"scripts": {
-		"start": "node dist/index.js",
-		"serve": "concurrently \"tsc -w\" \"nodemon dist/index.js ",
+		"start": "node ./src/dist/index.js",
+		"serve": "concurrently \"tsc -w -p ./src/tsconfig.json\" \"nodemon ./src/dist/index.js\" ",
 		"deploy": "npm run clean && npm run build && pm2 start ./dist/index.js --name ducen-rest-api",
 		"clean": "rimraf ./dist",
-		"build": "tsc -p ./src/tsconfig.js",
+		"build": "tsc -p ./src/tsconfig.json",
 		"test": "jest --config=./src/jest.config.json ",
 		"postinstall": "npm run build"
 	},
@@ -37,7 +37,8 @@
 		"mysql2": "^2.1.0",
 		"nodemailer": "^6.4.6",
 		"rimraf": "^3.0.0",
-		"sequelize": "^6.2.3"
+		"sequelize": "^6.2.3",
+		"swagger-ui-express": "^4.1.4"
 	},
 	"devDependencies": {
 		"@types/bcryptjs": "^2.4.2",
@@ -49,6 +50,7 @@
 		"@types/jsonwebtoken": "^8.3.5",
 		"@types/multer": "^1.3.10",
 		"@types/supertest": "^2.0.8",
+		"@types/swagger-ui-express": "^4.1.2",
 		"@types/validator": "^13.1.0",
 		"concurrently": "^5.0.0",
 		"jest": "^25.1.0",

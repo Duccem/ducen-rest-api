@@ -4,11 +4,14 @@ import express, { Application } from "express";
 import path from "path";
 import cors from "cors";
 import ducentrace from "ducentrace";
+import swaggerUI from "swagger-ui-express";
 
 import { routes } from "./routes";
 
 import logger from "./config/logger";
+import { port } from "./config/keys";
 import { errorHandler, RouteNotFound } from "./libs/errors";
+import { swaggerDocument } from "./docs";
 
 /**
  * Class of the principal application of the server
@@ -34,7 +37,7 @@ export class App {
 	}
 
 	private settings() {
-		this.app.set("port", this.port || process.argv[2] || process.env.API_PORT || 81);
+		this.app.set("port", this.port || process.argv[2] || port || 80);
 	}
 
 	private middlewares() {
@@ -42,6 +45,14 @@ export class App {
 		this.app.use(express.json());
 		this.app.use(express.urlencoded({ extended: false }));
 		this.app.use(ducentrace());
+		this.app.use(
+			"/",
+			swaggerUI.serve,
+			swaggerUI.setup(swaggerDocument, {
+				customCss: ".swagger-ui .topbar { display: none }",
+				customSiteTitle: "Ducen rest api",
+			})
+		);
 		this.app.use((req, res, next) => {
 			req.logger = logger;
 			next();
