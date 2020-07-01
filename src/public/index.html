@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Aftim Root</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content text-center">
+            <h1>API aftim</h1>
+
+        </div>
+    </div>
+    <script>
+        var imagenInput = document.getElementById('imagen');
+        if(imagenInput){
+            imagenInput.onchange = function(e){
+                let data={
+                    "empresa_id": 3,
+                    "codigo": "0308942"
+                }
+                let formdata = new FormData();
+                formdata.append('image',e.srcElement.files[0]);
+                formdata.append('data',JSON.stringify(data));
+                fetch('http://localhost:81/api/conceptos',{
+                    method:'POST',
+                    headers:{
+                        "x-access-control" : '{"user":"admin","password":"123456"}'
+                    },
+                    body:formdata
+                })
+                .then(res => console.log(res))
+                .catch(err => console.error(err));
+            }
+        }
+        
+    </script>
+</body>
+</html>

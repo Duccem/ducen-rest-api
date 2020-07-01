@@ -1,6 +1,6 @@
 {
 	"name": "aftim",
-	"version": "3.6.0",
+	"version": "4.0.0",
 	"description": "API de conexion entre las aplicaciones de la suite de administracion y la base de datos madre",
 	"main": "./dist/index.js",
 	"scripts": {
@@ -8,8 +8,8 @@
 		"serve": "concurrently \"tsc -w\" \"nodemon dist/index.js ",
 		"deploy": "npm run clean && npm run build && pm2 start ./dist/index.js --name ducen-rest-api",
 		"clean": "rimraf ./dist",
-		"build": "tsc -p tsconfig.json",
-		"test": "jest",
+		"build": "tsc -p ./src/tsconfig.js",
+		"test": "jest --config=./src/jest.config.json ",
 		"postinstall": "npm run build"
 	},
 	"keywords": [
