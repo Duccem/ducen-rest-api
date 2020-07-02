@@ -1,185 +1,134 @@
-import axios from "axios";
-import { dataURL } from "../../config/keys";
+import { Pool } from "mysql2/promise";
+import { Request, Response, NextFunction } from "express";
 
 /**
- * Class that work as interface of comunication of data interface.
- * This class can list, get, insert, update, remove and count the records of an entity,
- * also can get and count the records of an entity on function of other.
+ * Interface of a Consulter type class that allow to consult and execute queries on a database
+ * This queries can be made by any dialect of database engine
  */
-export class Consulter {
-	constructor(private engine: string = "mysql") {}
+export interface Consulter {
+	/** Method that handle the end of any connection to the database */
+	endConnection(): Promise<void>;
+
+	/** Method that return the correspondient connection of the consult */
+	getConnection(): Pool | null;
 
 	/**
-	 * This function get all of the elements on the table
-	 * @param model  model of the table
-	 * @param query paramaters to modify the consult
-	 * ```
-	 * query:{fields:'id', limit:50, offset:0, order:'asc', orderField:'id'}
-	 * ```
+	 * Method thar return a list of records of the target table
+	 * @param model The name of the target table
+	 * @param options The options of the consult
+	 * @returns Ana array of records, in relation to the model of the table
 	 */
-	public async list(model: string, query: any): Promise<any> {
-		try {
-			let { data } = await axios.get(`${dataURL}/${this.engine}/${model}`, {
-				params: query,
-			});
-			return data;
-		} catch (error) {
-			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
-			throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
-		}
-	}
+	list(model: string, options?: ConsulterOptions): Promise<any[]>;
 
 	/**
-	 * This function return the object especified if exist
-	 * @param model model of the table
-	 * @param id id of the register in the table
-	 * @param query paramaters to modify the consult
-	 * ```
-	 * query:{fields:'id', limit:50, offset:0, order:'asc', orderField:'id'}
-	 * ```
+	 * Method that return an record of one regist on a target table
+	 * @param model Target table name
+	 * @param id Identifier of the regist
+	 * @param options The options of the consult
+	 * @returns An record, in relation to the model of the table
 	 */
-	public async get(model: string, id: string | number, query: any): Promise<any> {
-		try {
-			let { data } = await axios.get(`${dataURL}/${this.engine}/${model}/${id}`, {
-				params: query,
-			});
-			return data;
-		} catch (error) {
-			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
-			throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
-		}
-	}
+	get(model: string, id: number | string, options?: ConsulterOptions): Promise<any>;
 
 	/**
-	 * This function return a collection of objects filtered by other
-	 * @param model model of the table
-	 * @param id id of register in the table
-	 * @param other model of the other entity
-	 * @param query parameters to modify the consult
-	 * ```
-	 * query:{fields:'id', limit:50, offset:0, order:'asc', orderField:'id'}
-	 * ```
+	 * Method that allow to insert a new record on a table
+	 * @param model Target table name
+	 * @param data The data to save
+	 * @returns A payload with information of the transaction
 	 */
-	public async filter(model: string, id: string | number, other: string, query: any): Promise<any> {
-		try {
-			let { data } = await axios.get(`${dataURL}/${this.engine}/${model}/${id}/${other}`, {
-				params: query,
-			});
-			return data;
-		} catch (error) {
-			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
-			throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
-		}
-	}
+	insert(model: string, data: any): Promise<any>;
 
 	/**
-	 * Used to execute a custom query on the data service
-	 * @param sql The SQL sentence to excute
+	 * Method to update the data of one record on a table
+	 * @param model Target table name
+	 * @param id Identifier of the record
+	 * @param data Data to save
+	 * @returns A payload with information of the transaction
 	 */
-	public async query(sql: string): Promise<any> {
-		try {
-			let { data } = await axios.post(`${dataURL}/${this.engine}/query`, { sql: sql });
-			return data;
-		} catch (error) {
-			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
-			throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
-		}
-	}
+	update(model: string, id: number | string, data: any): Promise<any>;
 
 	/**
-	 * This function create a new register in the bd
-	 * @param model model of the table
-	 * @param object the new object to introduce in the db
+	 * Method to delete an record of the table
+	 * @param model Target table name
+	 * @param id Identifier of the record
+	 * @returns A peyload with information of the transaction
 	 */
-	public async insert(model: string, object: any): Promise<any> {
-		try {
-			let { data } = await axios.post(`${dataURL}/${this.engine}/${model}/`, {
-				data: object,
-			});
-			return data;
-		} catch (error) {
-			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
-			throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
-		}
-	}
+	remove(model: string, id: number | string): Promise<any>;
 
 	/**
-	 * This function create a bunch of new registers in the bd
-	 * @param model model of the table
-	 * @param object the new object to introduce in the db
+	 * Method that allow to make a custom query
+	 * @param sql Custom query
+	 * @returns An array of results in relation with the query
 	 */
-	public async inserts(model: string, array: any): Promise<any> {
-		try {
-			let { data } = await axios.post(`${dataURL}/${this.engine}/${model}/many`, {
-				data: array,
-			});
-			return data;
-		} catch (error) {
-			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
-			throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
-		}
-	}
+	execute(sql: string): Promise<any[]>;
 
 	/**
-	 * Method dedicated to update the data of an entity
-	 * @param model Model of the entity
-	 * @param id Identifier of the entity
-	 * @param object The data to upsert
+	 * Methd that count the number of records on a table
+	 * @param model Target table name
+	 * @param options The options of the consult
+	 * @returns The number of records
 	 */
-	public async upsert(model: string, id: string | number, object: any): Promise<any> {
-		try {
-			let { data } = await axios.post(`${dataURL}/${this.engine}/${model}/${id}`, {
-				data: object,
-			});
-			return data;
-		} catch (error) {
-			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
-			throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
-		}
-	}
+	count(model: string, options?: ConsulterOptions): Promise<number>;
+}
+
+/**
+ * Interface of a Consulter class that allow to make queries and transactions on a multi tenant architecture database system
+ * The classes based on this interface has as objective the handling of the diferents connections and databases
+ */
+export interface MultiTenantConsulter extends Consulter {
+	/**
+	 * Method to register one connection if hasn't been registed and return the connection
+	 * @param tenant Identifier of the tenant database to attack
+	 * @returns The connection Pool to the tenant database
+	 */
+	setTenant(tenant: string): Pool;
 
 	/**
-	 * This function delete a register from de bd
-	 * @param model model of the table
-	 * @param id id of the register
+	 * Middleware to get the tenantId of the request
+	 * @param req Request Object
+	 * @param _res Response Object
+	 * @param next Next Function
 	 */
-	public async remove(model: string, id: string | number): Promise<any> {
-		try {
-			let { data } = await axios.delete(`${dataURL}/${this.engine}/${model}/${id}`);
-			return data;
-		} catch (error) {
-			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
-			throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
-		}
-	}
+	resolveTenant(req: Request, _res: Response, next: NextFunction): void;
+}
+
+/**
+ * Interface that define the options on a consult to the database
+ */
+export interface ConsulterOptions {
+	/** Limit of the records */
+	limit?: number;
+	/** Page of the records to consult */
+	page?: number;
+	/** Columns or fields of the table or entity to get in the consult */
+	fields?: string[];
+	/** Order of the array of records */
+	order?: string;
+	/** Field that work as key on the consult to order the records */
+	orderField?: string;
+	/** Object that contain the conditions of the consult */
+	where?: any;
+	/** Array of models relationed to the principal etity that are wanted on the consult*/
+	include?: string[] | object[];
+}
+
+/**
+ * Interface that define the methods that creates the queries and consults to the database
+ */
+export interface QueryMaker {
+	/**
+	 * Make the query to consult many records on the database
+	 * @param table Target table name
+	 * @param option The options of the consult
+	 * @returns The object or string query
+	 */
+	findMany(table: string, option?: ConsulterOptions): any;
 
 	/**
-	 * This function return the total count of register in a table
-	 * @param model model of the table
+	 * Make the query that consult one record of the database
+	 * @param table Target table name
+	 * @param id Identifier of the record
+	 * @param options The options of the consult
+	 * @return THe object or string query
 	 */
-	public async count(model: string): Promise<any> {
-		try {
-			let { data } = await axios.get(`${dataURL}/${this.engine}/count/${model}`);
-			return data;
-		} catch (error) {
-			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
-			throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
-		}
-	}
-
-	/**
-	 * This function return the count of all register related to other table
-	 * @param model the model of the table
-	 * @param other the other table
-	 * @param id the id of the register
-	 */
-	public async filterCount(model: string, other: string, id: string | number): Promise<number> {
-		try {
-			let { data } = await axios.get(`${dataURL}/${this.engine}/count/${model}/${id}/${other}`);
-			return data;
-		} catch (error) {
-			if (error.response.status === "400") throw new Error("BD_SYNTAX_ERROR");
-			throw new Error(`Error en conexion connection la BD, error: ${error.response.status}`);
-		}
-	}
+	findOne(table: string, id: number | string, options?: ConsulterOptions): any;
 }
