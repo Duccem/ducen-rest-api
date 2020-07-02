@@ -52,7 +52,43 @@ export class MySQLQueryMaker implements QueryMaker {
 			options.page ? options.page + "00" : "0"
 		} `;
 	}
-	public findOne(table: string, id: number | string, options: ConsulterOptions): any {}
+	public findOne(table: string, id: number | string, options: any): any {
+		//Make the fields to return section
+		let fields = options.fields // if the user set the fields then make a string with that
+			? options.fields
+					.split(",")
+					.map((value: any) => table + "." + value)
+					.join(",")
+			: `${table}.*`; // else just return all fields
+		//Section to inner join, the inner sentence, the fields of join and the conditional of the join
+		let innerJoin: string = "";
+		let innerConditionals: string = "";
+		if (options.include) {
+			// Make the fields of the inner
+			let innerFields: string[] = options.include.map((include: any) => {
+				return include.fields
+					? include.fields
+							.split(",")
+							.map((value: any) => include.table + "." + value)
+							.join(",")
+					: "," + include.table + ".*";
+			});
+			// join them to the fields of main
+			fields += innerFields.join(",");
+			//Make the inner join sentence
+			innerJoin = options.include
+				.map((value: any) => {
+					return `INNER JOIN ${value.table} ON ${value.table}.id = ${table}.${value.table}Id`;
+				})
+				.join(" ");
+			// Create the conditionals to every join
+			innerConditionals = options.include.map((value: any) => this.conditionalMaker(value.table, value.where)).join(" AND ");
+		}
+		//Return the consult complete
+		return `SELECT ${fields} FROM ${table} ${innerJoin} WHERE ${table}.id = ${id}  ORDER BY ${options.orderField || "id"} ${
+			options.order || "asc"
+		} LIMIT ${options.limit || "100"} offset ${options.page ? options.page + "00" : "0"} `;
+	}
 
 	/**
 	 * Make the structure of the conditional expression
