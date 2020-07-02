@@ -12,6 +12,7 @@ import logger from "./config/logger";
 import { port } from "./config/keys";
 import { errorHandler, RouteNotFound } from "./libs/errors";
 import { swaggerDocument } from "./docs";
+import { MySQLQueryMaker } from "./libs/Repositories/MySQLRepository/MySQLQueryMaker";
 
 /**
  * Class of the principal application of the server
@@ -79,6 +80,19 @@ export class App {
 		server.on("listening", () => {
 			let address: any = server.address();
 			logger.log(`Listening on http://${address.address}:${address.port}`, { type: "server", color: "system" });
+			const query = new MySQLQueryMaker();
+			const sql = query.findMany("products", {
+				fields: "id,name,brand,price",
+				include: [
+					{
+						table: "presentaciones",
+						where: {
+							["gte-multplicador"]: 2,
+						},
+					},
+				],
+			});
+			console.log(sql);
 		});
 	}
 }

@@ -10,37 +10,38 @@ import { NextFunction, Request, Response } from "express";
  *
  */
 export class MySQLConsulter implements Consulter {
-	public connection: Pool | null;
-	protected query?: QueryMaker;
+	public connection?: Pool;
+	protected query: QueryMaker;
 
 	constructor(database?: PoolOptions, logger?: Logger) {
 		if (database) {
 			try {
 				this.connection = createPool(database);
-				logger?.log(`connected to ${database.database}`, { type: "database", color: "system" });
+				//logger?.log(`connected to ${database.database}`, { type: "database", color: "system" });
 			} catch (error) {
-				logger?.log("Error on database connection", { color: "error", type: "error" });
+				//logger?.log("Error on database connection", { color: "error", type: "error" });
 				throw new Error("Error on database connection");
 			}
-		} else {
-			this.connection = null;
 		}
 		this.query = new MySQLQueryMaker();
 	}
 
 	public async endConnection(): Promise<void> {
-		await this.connection?.end();
+		if (this.connection) await this.connection.end();
 		//logger.log(`connection closed`, { type: 'database', color: 'system' });
 	}
 
-	public getConnection(): Pool | null {
-		return this.connection;
+	public getConnection(): Pool {
+		if (this.connection) {
+			return this.connection;
+		}
+		throw new Error("Not connection to database");
 	}
 
 	public async list(model: string, options?: ConsulterOptions): Promise<any[]> {
-		let sql = this.query?.findMany(model, options);
+		let sql = this.query.findMany(model, options);
 		try {
-			let data: any = await this.getConnection()?.query(sql);
+			let data: any = await this.getConnection().query(sql);
 			let response = JSON.parse(JSON.stringify(data[0]));
 			return response;
 		} catch (error) {
@@ -58,8 +59,8 @@ export class MySQLConsulter implements Consulter {
 
 	public async get(model: string, id: number | string, options?: ConsulterOptions): Promise<any> {
 		try {
-			let sql = this.query?.findOne(model, id, options);
-			let data: any = await this.getConnection()?.query(sql);
+			let sql = this.query.findOne(model, id, options);
+			let data: any = await this.getConnection().query(sql);
 			if (!data[0][0]) return null;
 			let response = JSON.parse(JSON.stringify(data[0][0]));
 			return response;
@@ -75,7 +76,7 @@ export class MySQLConsulter implements Consulter {
 
 	public async insert(model: string, data: any): Promise<any> {
 		try {
-			let inserted: any = await this.getConnection()?.query(`INSERT INTO ${model} set ?`, [data]);
+			let inserted: any = await this.getConnection().query(`INSERT INTO ${model} set ?`, [data]);
 			return inserted[0];
 		} catch (error) {
 			if (error.code === "ER_PARSE_ERROR" || error.code === "ER_BAD_FIELD_ERROR" || error.code === "ER_NO_REFERENCED_ROW_2") {
@@ -88,7 +89,7 @@ export class MySQLConsulter implements Consulter {
 
 	public async update(model: string, id: string | number, data: any): Promise<any> {
 		try {
-			let updated: any = await this.getConnection()?.query(`UPDATE ${model} set ? WHERE id = ?`, [data, id]);
+			let updated: any = await this.getConnection().query(`UPDATE ${model} set ? WHERE id = ?`, [data, id]);
 			return updated[0];
 		} catch (error) {
 			if (error.code === "ER_PARSE_ERROR" || error.code === "ER_BAD_FIELD_ERROR" || error.code === "ER_NO_REFERENCED_ROW_2") {
@@ -101,7 +102,7 @@ export class MySQLConsulter implements Consulter {
 
 	public async remove(model: string, id: number | string): Promise<any> {
 		try {
-			let deleted: any = await this.getConnection()?.query(`DELETE FROM ${model} WHERE id = ? `, [id]);
+			let deleted: any = await this.getConnection().query(`DELETE FROM ${model} WHERE id = ? `, [id]);
 			return deleted;
 		} catch (error) {
 			//logger.log(error, { type: "error", color: "error" });
@@ -112,7 +113,7 @@ export class MySQLConsulter implements Consulter {
 	public async execute(sql: string): Promise<any[]> {
 		try {
 			//logger.log(sql, { type: "database", color: "system" });
-			let data: any = await this.getConnection()?.query(sql);
+			let data: any = await this.getConnection().query(sql);
 			return data[0];
 		} catch (error) {
 			if (error.code === "ER_PARSE_ERROR" || error.code === "ER_BAD_FIELD_ERROR") {
@@ -125,7 +126,7 @@ export class MySQLConsulter implements Consulter {
 
 	public async count(model: string): Promise<number> {
 		try {
-			let count: any = await this.getConnection()?.query(`SELECT COUNT(id) as total FROM ${model}`);
+			let count: any = await this.getConnection().query(`SELECT COUNT(id) as total FROM ${model}`);
 			let total = count[0][0].total;
 			return parseInt(total);
 		} catch (error) {
@@ -177,12 +178,6 @@ export class MySQLMultiTenantConsulter extends MySQLConsulter implements MultiTe
 		return con;
 	}
 
-	/**
-	 * Middleware to express to handle the thread tenant work
-	 * @param req request
-	 * @param _res response
-	 * @param next next function
-	 */
 	public resolveTenant(req: Request, _res: Response, next: NextFunction): void {
 		let nameSpace = createNamespace("unique context");
 		nameSpace.run(() => {

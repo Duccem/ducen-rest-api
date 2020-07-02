@@ -96,19 +96,19 @@ export interface MultiTenantConsulter extends Consulter {
  */
 export interface ConsulterOptions {
 	/** Limit of the records */
-	limit?: number;
+	limit: number;
 	/** Page of the records to consult */
-	page?: number;
+	page: number;
 	/** Columns or fields of the table or entity to get in the consult */
-	fields?: string[];
+	fields: string[];
 	/** Order of the array of records */
-	order?: string;
+	order: string;
 	/** Field that work as key on the consult to order the records */
-	orderField?: string;
+	orderField: string;
 	/** Object that contain the conditions of the consult */
-	where?: any;
+	where: any;
 	/** Array of models relationed to the principal etity that are wanted on the consult*/
-	include?: string[] | object[];
+	include: string[] | object[];
 }
 
 /**
@@ -121,7 +121,7 @@ export interface QueryMaker {
 	 * @param option The options of the consult
 	 * @returns The object or string query
 	 */
-	findMany(table: string, option?: ConsulterOptions): any;
+	findMany(table: string, option?: any): any;
 
 	/**
 	 * Make the query that consult one record of the database
@@ -130,5 +130,5 @@ export interface QueryMaker {
 	 * @param options The options of the consult
 	 * @return THe object or string query
 	 */
-	findOne(table: string, id: number | string, options?: ConsulterOptions): any;
+	findOne(table: string, id: number | string, options?: any): any;
 }
