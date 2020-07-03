@@ -1,4 +1,5 @@
-import { QueryMaker, ConsulterOptions } from "../Consulter";
+import { QueryMaker } from "../QueryMaker";
+import { ConsulterOptions } from "../OptionsRepository";
 
 const SIMPLE_OPS = ["eq", "ne", "gt", "gte", "lt", "lte", "like", "notLike"];
 const BOOLEAN_OPS = ["is", "isNot"];
@@ -8,14 +9,12 @@ const ARRAY_OPS = ["between", "notBetween", "in", "notIn"];
  * Implement of QueryMaker interface to MySQL
  */
 export class MySQLQueryMaker implements QueryMaker {
-	public findMany(table: string, options?: any): any {
+	public findMany(table: string, options: ConsulterOptions = {}): any {
 		//Make the fields to return section
-		let fields = options.fields // if the user set the fields then make a string with that
-			? options.fields
-					.split(",")
-					.map((value: any) => table + "." + value)
-					.join(",")
-			: `${table}.*`; // else just return all fields
+		let fields = "";
+		// if the user set the fields then make a string with that
+		if (options.fields) fields = options.fields.map((value: any) => table + "." + value).join(",");
+		else fields = `${table}.*`; // else just return all fields
 
 		// make the principal conditional of quey
 		let condtional = this.conditionalMaker(table, options.where);
@@ -26,12 +25,8 @@ export class MySQLQueryMaker implements QueryMaker {
 		if (options.include) {
 			// Make the fields of the inner
 			let innerFields: string[] = options.include.map((include: any) => {
-				return include.fields
-					? include.fields
-							.split(",")
-							.map((value: any) => include.table + "." + value)
-							.join(",")
-					: "," + include.table + ".*";
+				if (options.fields) return include.fields.map((value: any) => include.table + "." + value).join(",");
+				else return "," + include.table + ".*";
 			});
 			// join them to the fields of main
 			fields += innerFields.join(",");
@@ -48,30 +43,24 @@ export class MySQLQueryMaker implements QueryMaker {
 		//Return the consult complete
 		return `SELECT ${fields} FROM ${table} ${innerJoin} ${condtional ? `WHERE ${condtional}` : ``} ${
 			condtional && innerConditionals ? ` AND ${innerConditionals}` : innerConditionals ? `WHERE ${innerConditionals}` : ""
-		} ORDER BY ${options.orderField || "id"} ${options.order || "asc"} LIMIT ${options.limit || "100"} offset ${
-			options.page ? options.page + "00" : "0"
-		} `;
+		} ORDER BY ${options.orderField || "id"} ${options.order || "asc"} LIMIT ${options.limit || "100"} offset ${options.page ? options.page + "00" : "0"} `;
 	}
-	public findOne(table: string, id: number | string, options: any): any {
+
+	public findOne(table: string, id: number | string, options: ConsulterOptions = {}): any {
 		//Make the fields to return section
-		let fields = options.fields // if the user set the fields then make a string with that
-			? options.fields
-					.split(",")
-					.map((value: any) => table + "." + value)
-					.join(",")
-			: `${table}.*`; // else just return all fields
+		let fields = "";
+		// if the user set the fields then make a string with that
+		if (options.fields) fields = options.fields.map((value: any) => table + "." + value).join(",");
+		else fields = `${table}.*`; // else just return all fields
+
 		//Section to inner join, the inner sentence, the fields of join and the conditional of the join
 		let innerJoin: string = "";
 		let innerConditionals: string = "";
 		if (options.include) {
 			// Make the fields of the inner
 			let innerFields: string[] = options.include.map((include: any) => {
-				return include.fields
-					? include.fields
-							.split(",")
-							.map((value: any) => include.table + "." + value)
-							.join(",")
-					: "," + include.table + ".*";
+				if (options.fields) return include.fields.map((value: any) => include.table + "." + value).join(",");
+				else return "," + include.table + ".*";
 			});
 			// join them to the fields of main
 			fields += innerFields.join(",");
@@ -85,9 +74,30 @@ export class MySQLQueryMaker implements QueryMaker {
 			innerConditionals = options.include.map((value: any) => this.conditionalMaker(value.table, value.where)).join(" AND ");
 		}
 		//Return the consult complete
-		return `SELECT ${fields} FROM ${table} ${innerJoin} WHERE ${table}.id = ${id}  ORDER BY ${options.orderField || "id"} ${
-			options.order || "asc"
-		} LIMIT ${options.limit || "100"} offset ${options.page ? options.page + "00" : "0"} `;
+		return `SELECT ${fields} FROM ${table} ${innerJoin} WHERE ${table}.id = ${id}  ORDER BY ${options.orderField || "id"} ${options.order || "asc"} LIMIT ${options.limit || "100"} offset ${
+			options.page ? options.page + "00" : "0"
+		} `;
+	}
+
+	public count(table: string, options: ConsulterOptions): any {
+		// make the principal conditional of quey
+		let condtional = this.conditionalMaker(table, options.where);
+		return `SELECT COUNT(id) as total FROM ${table} ${condtional ? `WHERE ${condtional}` : ""}`;
+	}
+
+	public parseOptions(options: any): ConsulterOptions {
+		let trueOptions: ConsulterOptions = {};
+		if (options.fields) trueOptions.fields = options.fields.split(",");
+		if (options.limit) trueOptions.limit = options.limit;
+		if (options.order) trueOptions.order = options.order;
+		if (options.orderField) trueOptions.orderField = options.orderField;
+		if (options.page) trueOptions.page = options.page;
+		for (const key in options) {
+			if (!["fields", "limit", "order", "orderField", "page"].includes(key)) {
+				trueOptions.where[key] = options[key];
+			}
+		}
+		return trueOptions;
 	}
 
 	/**
@@ -157,8 +167,7 @@ export class MySQLQueryMaker implements QueryMaker {
 			//Errors handling
 			if (SIMPLE_OPS.includes(op) && Array.isArray(value)) throw new Error(`El operador ${op} solo admite un solo valor`);
 			if (ARRAY_OPS.includes(op) && !Array.isArray(value)) throw new Error(`El operador ${op} requiere al menos 2 valores`);
-			if (BOOLEAN_OPS.includes(op) && !["null", "false", "true"].includes(value))
-				throw new Error(`El operador ${op} solo admite valores booleanos`);
+			if (BOOLEAN_OPS.includes(op) && !["null", "false", "true"].includes(value)) throw new Error(`El operador ${op} solo admite valores booleanos`);
 
 			//Make the expression for the correspondient
 			if (op == "eq") return `${table}.${key} = '${value}'`;
