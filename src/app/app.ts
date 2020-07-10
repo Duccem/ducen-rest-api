@@ -8,9 +8,10 @@ import swaggerUI from "swagger-ui-express";
 
 import { routes } from "./routes";
 
-import logger from "./config/logger";
+import { Logger } from "./libs/Logger";
 import { port } from "./config/keys";
 import { errorHandler, RouteNotFound } from "./libs/errors";
+import { query } from "./libs/Clients/ClientDecorator";
 import { swaggerDocument } from "./docs";
 
 /**
@@ -54,7 +55,7 @@ export class App {
 			})
 		);
 		this.app.use((req, res, next) => {
-			req.logger = logger;
+			req.logger = new Logger();
 			next();
 		});
 		this.app.use("/api/images/", express.static(path.resolve("public/images")));
@@ -78,7 +79,6 @@ export class App {
 		let server = this.app.listen(this.app.get("port"), "127.0.0.1");
 		server.on("listening", () => {
 			let address: any = server.address();
-			logger.log(`Listening on http://${address.address}:${address.port}`, { type: "server", color: "system" });
 		});
 	}
 }

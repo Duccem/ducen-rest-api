@@ -80,9 +80,9 @@ export class Logger {
 	private mode: string;
 	private format: string;
 
-	constructor(options?: ILoggerConfig) {
-		this.mode = options?.mode || "dev";
-		this.format = options?.format || "iso";
+	constructor(options: ILoggerConfig = {}) {
+		this.mode = options.mode || "dev";
+		this.format = options.format || "iso";
 	}
 
 	get logMode() {

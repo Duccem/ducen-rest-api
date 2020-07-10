@@ -1,4 +1,4 @@
-import { Logger } from "ducenlogger";
+import { Logger } from "./app/libs/Logger";
 
 declare global {
 	namespace Express {
