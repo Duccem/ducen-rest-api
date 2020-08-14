@@ -6,7 +6,7 @@ import cors from "cors";
 import ducentrace from "ducentrace";
 import swaggerUI from "swagger-ui-express";
 
-import { routes } from "./libs/Clients/router";
+import { routes } from "./libs/Clients/RESTClient";
 import { MySQLConsulter } from "./libs/Repositories/MySQLRepository/MySQLRepository";
 
 import { Logger } from "./libs/Logger";
