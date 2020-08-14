@@ -6,12 +6,12 @@ import cors from "cors";
 import ducentrace from "ducentrace";
 import swaggerUI from "swagger-ui-express";
 
-import { routes } from "./routes";
+import { routes } from "./libs/Clients/router";
+import { MySQLConsulter } from "./libs/Repositories/MySQLRepository/MySQLRepository";
 
 import { Logger } from "./libs/Logger";
-import { port } from "./config/keys";
+import { port, database } from "./config/keys";
 import { errorHandler, RouteNotFound } from "./libs/errors";
-import { query } from "./libs/Clients/ClientDecorator";
 import { swaggerDocument } from "./docs";
 
 /**
@@ -62,7 +62,7 @@ export class App {
 	}
 
 	private routes() {
-		routes(this.app);
+		routes(this.app, new MySQLConsulter(database));
 	}
 
 	private errors() {
