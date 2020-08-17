@@ -1,7 +1,8 @@
-import { Repository } from "../../../libs/Repositories/Repository";
-import { BadRequest, Unauthorized } from "../../../libs/Errors";
-import { User } from "../domain/User";
 import jwt from "jsonwebtoken";
+import { User } from "../domain/User";
+import { AuthJsonDocument } from "../domain/UserDocument";
+import { BadRequest, Unauthorized } from "../../../libs/Errors";
+import { Repository } from "../../../libs/Repositories/Repository";
 
 export class UserAuth {
 	private repository: Repository;
@@ -9,7 +10,7 @@ export class UserAuth {
 		this.repository = repo;
 	}
 
-	public async signup(actor: any): Promise<any> {
+	public async signup(actor: any): Promise<AuthJsonDocument> {
 		let count = await this.repository.count("users", { where: { email: actor.email } });
 
 		if (count > 0) throw new BadRequest("The email is already in use");
@@ -26,7 +27,7 @@ export class UserAuth {
 		};
 	}
 
-	public async login(identifier: string, password: string): Promise<any> {
+	public async login(identifier: string, password: string): Promise<AuthJsonDocument> {
 		const users: any[] = await this.repository.list("user", {
 			where: {
 				or: {

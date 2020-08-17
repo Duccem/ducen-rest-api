@@ -1,4 +1,5 @@
 import { Password } from "./Password";
+import { UserJsonDocument } from "./UserDocument";
 //Principal class of Users
 export class User {
 	public id?: number;
@@ -11,20 +12,11 @@ export class User {
 	public password: Password;
 	public edad?: number;
 
-	constructor(initObject: {
-		id?: number;
-		nombres: string;
-		apellidos: string;
-		fecha_nacimiento: Date;
-		sexo: string;
-		direccion: string;
-		usuario: string;
-		password: string;
-	}) {
+	constructor(initObject: UserJsonDocument) {
 		this.id = initObject.id;
 		this.nombres = initObject.nombres;
 		this.apellidos = initObject.apellidos;
-		this.fecha_nacimiento = initObject.fecha_nacimiento;
+		this.fecha_nacimiento = new Date(initObject.fecha_nacimiento);
 		this.sexo = initObject.sexo;
 		this.direccion = initObject.direccion;
 		this.usuario = initObject.usuario;
@@ -45,12 +37,12 @@ export class User {
 		return edad;
 	}
 
-	public toPrimitives() {
+	public toPrimitives(): UserJsonDocument {
 		return {
 			id: this.id,
 			nombres: this.nombres,
 			apellidos: this.apellidos,
-			fecha_nacimiento: this.fecha_nacimiento,
+			fecha_nacimiento: this.fecha_nacimiento.toDateString(),
 			sexo: this.sexo,
 			direccion: this.direccion,
 			usuario: this.usuario,
