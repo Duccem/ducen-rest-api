@@ -10,6 +10,8 @@ import { QueryMaker } from "../QueryMaker";
 import { ConsulterOptions } from "../OptionsRepository";
 import { Logger } from "../../Logger";
 import { GeneralError, BadRequest } from "../../Errors";
+import { JsonDocument } from "libs/Types/JsonDocument";
+import { Nulleable } from "libs/Types/Nulleable";
 
 /**
  * Implement of the Repository interface to MySQL Databases
@@ -49,7 +51,7 @@ export class MySQLConsulter implements Repository {
 		throw new GeneralError("Not connection to database");
 	}
 
-	public async list(model: string, options?: ConsulterOptions): Promise<any[]> {
+	public async list<T extends JsonDocument>(model: string, options?: ConsulterOptions): Promise<Array<T>> {
 		let sql = this.query.findMany(model, options);
 		this.logger.log(sql, { type: "database", color: "system" });
 		let data: any = await this.getConnection().query(sql);
@@ -57,7 +59,7 @@ export class MySQLConsulter implements Repository {
 		return response;
 	}
 
-	public async get(model: string, id: number | string, options?: ConsulterOptions): Promise<any> {
+	public async get<T extends JsonDocument>(model: string, id: number | string, options?: ConsulterOptions): Promise<Nulleable<T>> {
 		let sql = this.query.findOne(model, id, options);
 		this.logger.log(sql, { type: "database", color: "system" });
 		let data: any = await this.getConnection().query(sql);

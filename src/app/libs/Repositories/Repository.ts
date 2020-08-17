@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ConsulterOptions } from "./OptionsRepository";
+import { JsonDocument } from "../Types/JsonDocument";
+import { Nulleable } from "libs/Types/Nulleable";
 
 /**
  * Interface of a Consulter type class that allow to consult and execute queries on a database
@@ -12,7 +14,7 @@ export interface Repository {
 	 * @param options The options of the consult
 	 * @returns Ana array of records, in relation to the model of the table
 	 */
-	list(model: string, options?: ConsulterOptions): Promise<any[]>;
+	list<T extends JsonDocument>(model: string, options?: ConsulterOptions): Promise<Array<T>>;
 
 	/**
 	 * Method that return an record of one regist on a target table
@@ -21,7 +23,7 @@ export interface Repository {
 	 * @param options The options of the consult
 	 * @returns An record, in relation to the model of the table
 	 */
-	get(model: string, id: number | string, options?: ConsulterOptions): Promise<any>;
+	get<T extends JsonDocument>(model: string, id: number | string, options?: ConsulterOptions): Promise<Nulleable<T>>;
 
 	/**
 	 * Method that allow to insert a new record on a table
