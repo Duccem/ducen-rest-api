@@ -1,7 +1,7 @@
 /**
- * Interface that define the options on a consult to the database
+ * Type that define the options on a consult to the database
  */
-export interface ConsulterOptions {
+export type ConsulterOptions = {
 	/** Limit of the records */
 	limit?: number;
 	/** Page of the records to consult */
@@ -16,16 +16,16 @@ export interface ConsulterOptions {
 	where?: any;
 	/** Array of models relationed to the principal etity that are wanted on the consult*/
 	include?: IncludeOptions[];
-}
+};
 
 /**
- * Interface to define the Include objects of the query
+ * Type to define the Include objects of the query
  */
-export interface IncludeOptions {
+export type IncludeOptions = {
 	/** Name of the table to join */
 	name?: string;
 	/** Fields to join */
 	fields?: string[];
 	/** Join conditionals  */
 	where?: any;
-}
+};
