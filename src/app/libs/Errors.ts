@@ -24,6 +24,7 @@ export class GeneralError extends Error {
 	}
 	public getMessage(): string {
 		if (this instanceof InvalidID) return this.log || "The given ID have the incorrect format";
+		if (this instanceof InvalidArgument) return this.log || "Argument with bad format or doesn`t exists";
 		if (this instanceof BadRequest) return this.log || "Bad Request";
 		if (this instanceof Unauthorized) return this.log || "Credentials are invalids";
 		if (this instanceof PaymentRequired) return this.log || "Payment required to this route";
@@ -86,6 +87,11 @@ export class NotFound extends GeneralError {}
  * Invalid ID of entity
  */
 export class InvalidID extends BadRequest {}
+
+/**
+ *
+ */
+export class InvalidArgument extends BadRequest {}
 
 /**
  * The requested route doesn`t exits
