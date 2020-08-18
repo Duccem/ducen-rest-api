@@ -1,4 +1,4 @@
-import { JsonDocument } from "../../../libs/Types/JsonDocument";
+import { JsonDocument } from "../../shared/domain/Types/JsonDocument";
 
 export type UserJsonDocument = JsonDocument & {
 	nombres: string;

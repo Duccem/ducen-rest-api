@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import { User } from "../domain/User";
 import { AuthJsonDocument } from "../domain/UserDocument";
 import { BadRequest, Unauthorized } from "../../../libs/Errors";
-import { Repository } from "../../../libs/Repositories/Repository";
+import { Repository } from "../../shared/infraestructure/Repositories/Repository";
 
 export class UserAuth {
 	private repository: Repository;

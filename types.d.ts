@@ -1,4 +1,4 @@
-import { Logger } from "./app/libs/Logger";
+import { Logger } from "./src/libs/Logger";
 
 declare global {
 	namespace Express {

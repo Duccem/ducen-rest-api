@@ -14,6 +14,11 @@ export class UuidValueObject {
 		return new UuidValueObject(v4());
 	}
 
+	public static validateID(id:any): boolean {
+		if(isNaN(id) || id == 0) return false;
+		return true;
+	}
+
 	private ensureIsValidUuid(id: string): void {
 		if (!validate(id)) {
 			throw new Error(`<${this.constructor.name}> does not allow the value <${id}>`);

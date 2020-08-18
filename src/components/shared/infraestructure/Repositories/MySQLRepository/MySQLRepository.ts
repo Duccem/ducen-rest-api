@@ -8,10 +8,10 @@ import { MySQLQueryMaker } from "./MySQLQueryMaker";
 import { Repository, MultiTenantRepository } from "../Repository";
 import { QueryMaker } from "../QueryMaker";
 import { ConsulterOptions } from "../OptionsRepository";
-import { Logger } from "../../Logger";
-import { GeneralError, BadRequest } from "../../Errors";
-import { JsonDocument } from "libs/Types/JsonDocument";
-import { Nulleable } from "libs/Types/Nulleable";
+import { Logger } from "../../../../../libs/Logger";
+import { GeneralError, BadRequest } from "../../../../../libs/Errors";
+import { JsonDocument } from "components/shared/domain/Types/JsonDocument";
+import { Nulleable } from "components/shared/domain/Types/Nulleable";
 
 /**
  * Implement of the Repository interface to MySQL Databases

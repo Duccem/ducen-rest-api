@@ -1,4 +1,4 @@
-import { StringValueObject } from "../../../libs/ValueObjects/StringValueObject";
+import { StringValueObject } from "../../shared/domain/ValueObjects/StringValueObject";
 import { Authentication } from "../../../libs/Authentication";
 
 /**

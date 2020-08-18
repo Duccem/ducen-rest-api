@@ -8,6 +8,4 @@ export const database = {
 	host: process.env.DATABASE_HOST || "",
 };
 export const tokenKey = process.env.TOKEN_KEY;
-export const dataURL = process.env.DATA_URL;
-export const authURL = process.env.AUTH_URL;
 export const port = process.env.PORT;
