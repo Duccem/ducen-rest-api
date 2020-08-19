@@ -1,5 +1,5 @@
-import { v4 } from "uuid";
-import validate from "uuid-validate";
+import { v4, validate } from "uuid";
+
 
 export class UuidValueObject {
 	readonly value: string;

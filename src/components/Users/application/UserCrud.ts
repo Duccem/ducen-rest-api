@@ -1,5 +1,5 @@
 import { User } from "../domain/User";
-import { UserJsonDocument } from "../domain/UserDocument";
+import { UserJsonDocument } from "../domain/Types/UserJsonDocument";
 import { UuidValueObject} from "../../shared/domain/ValueObjects/UuidValueObject";
 import { InvalidID, ElementNotFound } from "../../../libs/Errors";
 import { Repository } from "../../shared/infraestructure/Repositories/Repository";

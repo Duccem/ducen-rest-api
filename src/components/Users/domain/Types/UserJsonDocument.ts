@@ -1,4 +1,4 @@
-import { JsonDocument } from "../../shared/domain/Types/JsonDocument";
+import { JsonDocument } from "../../../shared/domain/Types/JsonDocument";
 
 export type UserJsonDocument = JsonDocument & {
 	nombres: string;
@@ -8,9 +8,7 @@ export type UserJsonDocument = JsonDocument & {
 	direccion: string;
 	usuario: string;
 	password: string;
+	edad?: number;
 };
 
-export type AuthJsonDocument = {
-	token: string;
-	user: UserJsonDocument;
-};
+

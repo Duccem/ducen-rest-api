@@ -1,5 +1,6 @@
-import { StringValueObject } from "../../shared/domain/ValueObjects/StringValueObject";
-import { Authentication } from "../../../libs/Authentication";
+import { StringValueObject } from "../../../shared/domain/ValueObjects/StringValueObject";
+import { Authentication } from "../../../../libs/Authentication";
+import { InvalidArgument } from "../../../../libs/errors";
 
 /**
  * Password field that ensure that this value is correct and is encripted
@@ -26,7 +27,7 @@ export class Password extends StringValueObject {
 			else if (this.value.charCodeAt(index) >= 48 && this.value.charCodeAt(index) >= 57) number = true;
 			else weird = true;
 		}
-		if (!size && !upper && !lower && !number && !weird) throw new Error("Formato de la contraseña incorrecta");
+		if (!size && !upper && !lower && !number && !weird) throw new InvalidArgument("Formato de la contraseña incorrecta");
 	}
 
 	/**

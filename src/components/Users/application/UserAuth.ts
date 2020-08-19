@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { User } from "../domain/User";
-import { AuthJsonDocument } from "../domain/UserDocument";
+import { AuthJsonDocument } from "../domain/Types/AuthJsonDocument";
 import { BadRequest, Unauthorized } from "../../../libs/Errors";
 import { Repository } from "../../shared/infraestructure/Repositories/Repository";
 

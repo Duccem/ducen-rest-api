@@ -1,3 +1,3 @@
 export type JsonDocument = {
-	id?: number;
+	id?: string;
 };
