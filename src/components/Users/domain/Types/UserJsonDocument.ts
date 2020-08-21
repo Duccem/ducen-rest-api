@@ -8,6 +8,7 @@ export type UserJsonDocument = JsonDocument & {
 	direccion: string;
 	usuario: string;
 	password: string;
+	email: string;
 	edad?: number;
 };
 

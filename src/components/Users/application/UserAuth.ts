@@ -3,15 +3,23 @@ import { User } from "../domain/User";
 import { AuthJsonDocument } from "../domain/Types/AuthJsonDocument";
 import { BadRequest, Unauthorized } from "../../../libs/Errors";
 import { Repository } from "../../shared/infraestructure/Repositories/Repository";
+import { UserJsonDocument } from "../domain/Types/UserJsonDocument";
 
+/**
+ * Uses cases of authentication of users, login, signup and log outh
+ */
 export class UserAuth {
 	private repository: Repository;
 	constructor(repo: Repository) {
 		this.repository = repo;
 	}
 
-	public async signup(actor: any): Promise<AuthJsonDocument> {
-		let count = await this.repository.count("users", { where: { email: actor.email } });
+	/**
+	 * Sign up function
+	 * @param actor The data of the new user
+	 */
+	public async signup(actor: UserJsonDocument): Promise<AuthJsonDocument> {
+		let count = await this.repository.count("users", { where: { usuario: actor.usuario } });
 
 		if (count > 0) throw new BadRequest("The email is already in use");
 		const user = new User(actor);
