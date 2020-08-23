@@ -55,7 +55,7 @@ export interface Repository {
 	 * @param sql Custom query
 	 * @returns An array of results in relation with the query
 	 */
-	execute(sql: string): Promise<any[]>;
+	execute(sql: string): Promise<Array<any>>;
 
 	/**
 	 * Methd that count the number of records on a table

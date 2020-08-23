@@ -83,7 +83,7 @@ export class MySQLConsulter implements Repository {
 		return deleted;
 	}
 
-	public async execute(sql: string): Promise<any[]> {
+	public async execute(sql: string): Promise<Array<any>> {
 		this.logger.log(sql, { type: "database", color: "system" });
 		let data: any = await this.getConnection().query(sql);
 		let response = JSON.parse(JSON.stringify(data[0]));
