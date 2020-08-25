@@ -5,6 +5,7 @@ import path from "path";
 import cors from "cors";
 import ducentrace from "ducentrace";
 import swaggerUI from "swagger-ui-express";
+import cookieParser from "cookie-parser";
 
 import { routes } from "./components/shared/infraestructure/Clients/RESTClient";
 import { MySQLConsulter } from "./components/shared/infraestructure/Repositories/MySQLRepository/MySQLRepository";
@@ -43,6 +44,7 @@ export class App {
 
 	private middlewares() {
 		this.app.use(cors({ exposedHeaders: "Authorization" }));
+		this.app.use(cookieParser());
 		this.app.use(express.json());
 		this.app.use(express.urlencoded({ extended: false }));
 		this.app.use(ducentrace());

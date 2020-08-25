@@ -1,5 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import { UserAuth } from "../application/UserAuth";
+import jwt from "jsonwebtoken";
 
 export class UserRouter {
 	private controller: UserAuth;
@@ -18,7 +19,12 @@ export class UserRouter {
 	private async signup(req: Request, res: Response, next: NextFunction) {
 		try {
 			const response = await this.controller.signup(req.body);
-			return res.status(200).json(response);
+			const token = jwt.sign({ _id: response._id }, "26778376", {
+				expiresIn: 60 * 60 * 24,
+			});
+			return res.cookie('token', token, {expires: new Date(Date.now() + 60 * 60 * 24)})
+						.status(200)
+						.json(response);
 		} catch (error) {
 			next(error);
 		}
@@ -28,7 +34,12 @@ export class UserRouter {
 		try {
 			const { user, password } = req.body;
 			const response = await this.controller.login(user, password);
-			return res.status(200).json(response);
+			const token = jwt.sign({ _id: response._id }, process.env.TOKEN_KEY || "2423503", {
+				expiresIn: 60 * 60 * 24,
+			});
+			return res.cookie('token', token, {expires: new Date(Date.now() + 60 * 60 * 24)})
+						.status(200)
+						.json(response);
 		} catch (error) {
 			next(error);
 		}
