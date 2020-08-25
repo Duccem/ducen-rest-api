@@ -1,15 +1,20 @@
 import { JsonDocument } from "../../../shared/domain/Types/JsonDocument";
 
 export type UserJsonDocument = JsonDocument & {
-	nombres: string;
-	apellidos: string;
-	fecha_nacimiento: string;
-	sexo: string;
-	direccion: string;
-	usuario: string;
+	firstname: string;
+	lastname: string;
+	username: string;
 	password: string;
 	email: string;
-	edad?: number;
+	birthdate: string;
+	sex: string;
+	age?: number;
+	adress?: string;
+	photo?: string;
+	money: number;
+	travels: number;
+	daily_travels: number;
+	daily_spend: number;
 };
 
 
