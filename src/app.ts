@@ -12,7 +12,7 @@ import { MySQLConsulter } from "./components/shared/infraestructure/Repositories
 
 import { Logger } from "./libs/Logger";
 import { port, database } from "./config/keys";
-import { errorHandler, RouteNotFound } from "./libs/errors";
+import { errorHandler, RouteNotFound } from "./libs/Errors";
 import { swaggerDocument } from "./docs";
 
 /**
