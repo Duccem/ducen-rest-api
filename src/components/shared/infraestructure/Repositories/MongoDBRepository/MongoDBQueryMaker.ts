@@ -10,7 +10,7 @@ export class MongoDBQueryMaker implements QueryMaker {
         let fields: any = {};
         if(options.fields) options.fields.forEach((field)=> fields[`${field}`]=0);
 
-        let conditional = 
+        let conditional = this.conditionalMaker(table, options.where);
     }
 
     public findOne(table: string, id: number | string, options: ConsulterOptions = {}): any {
