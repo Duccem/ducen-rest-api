@@ -74,9 +74,7 @@ export class MySQLQueryMaker implements QueryMaker {
 			// innerConditionals = options.include.map((value: any) => this.conditionalMaker(value.table, value.where)).join(" AND ");
 		}
 		//Return the consult complete
-		return `SELECT ${fields} FROM ${table} ${innerJoin} WHERE ${table}.id = ${id}  ORDER BY ${options.orderField || "id"} ${options.order || "asc"} LIMIT ${
-			options.limit || "100"
-		} offset ${options.page ? options.page + "00" : "0"} `;
+		return `SELECT ${fields} FROM ${table} ${innerJoin} WHERE ${table}.id = ${id}`;
 	}
 
 	public count(table: string, options: ConsulterOptions): any {
