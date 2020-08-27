@@ -5,11 +5,18 @@ import { JsonDocument } from "components/shared/domain/Types/JsonDocument";
 import { ConsulterOptions } from "../OptionsRepository";
 import { Nulleable } from "components/shared/domain/Types/Nulleable";
 import { NextFunction, Request, Response } from "express";
+import { QueryMaker } from "../QueryMaker";
+import { MongoDBQueryMaker } from "./MongoDBQueryMaker";
+import { MongoClient, Db } from 'mongodb'
 
 export class MongoDBRepoitory implements Repository {
     private logger: Logger;
+    private query: QueryMaker;
+    private connection: Db;
     constructor(databse?: any, logger?: Logger){
         this.logger = logger || new Logger();
+        this.query = new MongoDBQueryMaker();
+        this.connection = 
     }
 
     public async list<T extends JsonDocument>(model: string, options: ConsulterOptions): Promise<Array<T>>{
