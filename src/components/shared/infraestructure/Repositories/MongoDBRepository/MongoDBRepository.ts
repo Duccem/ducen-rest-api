@@ -35,7 +35,9 @@ export class MongoDBRepoitory implements Repository {
     }
 
     public async get<T extends JsonDocument>(model: string, id: number | string, options: ConsulterOptions): Promise<Nulleable<T>>{
-        return null;
+        let { conditional,  fields  } = this.query.findOne(model,id,options);
+        let data: Array<T> = await (await this.getConnection(model)).find(conditional,fields).limit(1).toArray();
+        return data[0];
     }
 
     public async insert(model: string, data:any): Promise<any>{
