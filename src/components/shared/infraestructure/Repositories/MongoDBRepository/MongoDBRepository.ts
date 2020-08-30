@@ -41,7 +41,7 @@ export class MongoDBRepoitory implements Repository {
     }
 
     public async insert(model: string, data:any): Promise<any>{
-
+        return null;
     }
 
     public async update(model: string, id: string | number, data: any): Promise<any>{
