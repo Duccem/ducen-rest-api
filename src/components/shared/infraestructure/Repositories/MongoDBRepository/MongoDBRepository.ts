@@ -2,6 +2,7 @@
 import { Repository, MultiTenantRepository } from "../Repository";
 import { Logger } from "libs/Logger";
 import { JsonDocument } from "components/shared/domain/Types/JsonDocument";
+import { GeneralError } from "../../../../../libs/Errors";
 import { ConsulterOptions } from "../OptionsRepository";
 import { Nulleable } from "components/shared/domain/Types/Nulleable";
 import { NextFunction, Request, Response } from "express";
@@ -10,6 +11,7 @@ import { MongoDBQueryMaker } from "./MongoDBQueryMaker";
 import { MongoClient, Db, Collection} from 'mongodb'
 
 export class MongoDBRepoitory implements Repository {
+    protected connection?: MongoClient;
     private logger: Logger;
     private query: QueryMaker;
     private database: any;
@@ -19,18 +21,27 @@ export class MongoDBRepoitory implements Repository {
         this.database = database;
     }
 
-    private async getConnection(dbName: string): Promise<Collection> {
-        let collection  = await (await MongoClient.connect(this.database.host)).db(this.database.name).collection(dbName);
-        return collection;
+    public async setConnection(tenant?: string): Promise<any> {
+        if(this.connection) return this.connection;
+		try {
+			this.connection = await MongoClient.connect(this.database.host)
+			this.logger.log(`connected to ${this.database.database}`, { type: "database", color: "system" });
+		} catch (error) {
+			throw new GeneralError("Error on database connection");
+		}
+		return this.connection;
+    }
+    private getConnection(dbName: string): Collection {
+        if(this.connection){
+            let collection  =  this.connection.db(this.database.name).collection(dbName);
+            return collection;
+        }
+        throw new GeneralError("Not connection to database");
     }
 
     public async list<T extends JsonDocument>(model: string, options: ConsulterOptions): Promise<Array<T>>{
         let { conditional, limit, orderField, order, offset, fields  } = this.query.findMany(model,options);
-        let data: Array<T> = await (await this.getConnection(model))
-                                    .find(conditional, fields)
-                                    .skip(offset).limit(limit)
-                                    .sort({[`${orderField}`]: order})
-                                    .toArray()
+        let data: Array<T> = await this.getConnection(model).find(conditional, fields).skip(offset).limit(limit).sort({[`${orderField}`]: order}).toArray()
         return data;
     }
 

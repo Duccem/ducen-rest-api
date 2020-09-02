@@ -2,7 +2,6 @@
 import { createPool, PoolOptions, Pool } from "mysql2/promise";
 import { createNamespace, getNamespace } from "continuation-local-storage";
 import { NextFunction, Request, Response } from "express";
-
 //Personal imports
 import { MySQLQueryMaker } from "./MySQLQueryMaker";
 import { Repository, MultiTenantRepository } from "../Repository";
@@ -12,24 +11,18 @@ import { Logger } from "../../../../../libs/Logger";
 import { GeneralError, BadRequest } from "../../../../../libs/Errors";
 import { JsonDocument } from "components/shared/domain/Types/JsonDocument";
 import { Nulleable } from "components/shared/domain/Types/Nulleable";
-
 /**
  * Implement of the Repository interface to MySQL Databases
  */
-export class MySQLConsulter implements Repository {
+export class MySQLRepository implements Repository {
 	public connection?: Pool;
+	protected database: any;
 	protected query: QueryMaker;
 	protected logger: Logger;
+
 	constructor(database?: PoolOptions, logger?: Logger) {
+		this.database = database || null;
 		this.logger = logger || new Logger();
-		if (database) {
-			try {
-				this.connection = createPool(database);
-				this.logger.log(`connected to ${database.database}`, { type: "database", color: "system" });
-			} catch (error) {
-				throw new GeneralError("Error on database connection");
-			}
-		}
 		this.query = new MySQLQueryMaker();
 	}
 
@@ -49,6 +42,17 @@ export class MySQLConsulter implements Repository {
 			return this.connection;
 		}
 		throw new GeneralError("Not connection to database");
+	}
+
+	public async setConnection(tenant?: string): Promise<any> {
+		if(this.connection) return this.connection;
+		try {
+			this.connection = createPool(this.database);
+			this.logger.log(`connected to ${this.database.database}`, { type: "database", color: "system" });
+		} catch (error) {
+			throw new GeneralError("Error on database connection");
+		}
+		return this.connection;
 	}
 
 	public async list<T extends JsonDocument>(model: string, options?: ConsulterOptions): Promise<Array<T>> {
@@ -100,7 +104,7 @@ export class MySQLConsulter implements Repository {
 /**
  * Extended class that make sure your connections to diferents tenant databases
  */
-export class MySQLMultiTenantConsulter extends MySQLConsulter implements MultiTenantRepository {
+export class MySQLMultiTenantRepository extends MySQLRepository implements MultiTenantRepository {
 	/** the pool of connections to the databases */
 	private tenantPool: any = {};
 	/** data to the connection to server */
@@ -111,7 +115,7 @@ export class MySQLMultiTenantConsulter extends MySQLConsulter implements MultiTe
 		this.options = options;
 	}
 
-	public setTenant(tenant: string): Pool {
+	public async setConnection(tenant: string): Promise<any> {
 		let con = this.tenantPool[tenant];
 		if (con) {
 			return con;
@@ -136,10 +140,11 @@ export class MySQLMultiTenantConsulter extends MySQLConsulter implements MultiTe
 		return con;
 	}
 
-	public resolveTenant(req: Request, _res: Response, next: NextFunction): void {
+	public async resolveTenant(req: Request, _res: Response, next: NextFunction): Promise<void> {
 		let nameSpace = createNamespace("unique context");
+		let connection = await this.setConnection(req.tenantId);
 		nameSpace.run(() => {
-			nameSpace.set("connection", this.setTenant(req.tenantId)); // This will set the knex instance to the 'connection'
+			nameSpace.set("connection", connection); // This will set the knex instance to the 'connection'
 			next();
 		});
 	}
@@ -156,4 +161,4 @@ export class MySQLMultiTenantConsulter extends MySQLConsulter implements MultiTe
 	}
 }
 
-export default (database: PoolOptions) => new MySQLConsulter(database);
+export default (database: PoolOptions) => new MySQLRepository(database);

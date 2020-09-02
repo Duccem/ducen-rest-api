@@ -9,6 +9,12 @@ import { Nulleable } from "components/shared/domain/Types/Nulleable";
  */
 export interface Repository {
 	/**
+	 * Method to register one connection if hasn't been registed and return the connection
+	 * @param tenant Identifier of the tenant database to attack
+	 * @returns The connection Pool to the tenant database
+	 */
+	setConnection(tenant?: string): any;
+	/**
 	 * Method thar return a list of records of the target table
 	 * @param model The name of the target table
 	 * @param options The options of the consult
@@ -71,13 +77,7 @@ export interface Repository {
  * The classes based on this interface has as objective the handling of the diferents connections and databases
  */
 export interface MultiTenantRepository extends Repository {
-	/**
-	 * Method to register one connection if hasn't been registed and return the connection
-	 * @param tenant Identifier of the tenant database to attack
-	 * @returns The connection Pool to the tenant database
-	 */
-	setTenant(tenant: string): any;
-
+	
 	/**
 	 * Middleware to get the tenantId of the request
 	 * @param req Request Object
