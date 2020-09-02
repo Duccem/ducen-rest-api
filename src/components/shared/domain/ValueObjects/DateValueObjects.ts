@@ -1,4 +1,4 @@
-import { InvalidArgument } from "../../../../libs/errors";
+import { InvalidArgument } from "../Errors";
 
 export abstract class DateValueObject{
 	public value: Date;

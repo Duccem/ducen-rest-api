@@ -3,8 +3,9 @@ import { UserJsonDocument } from "./Types/UserJsonDocument";
 import { UuidValueObject } from "../../shared/domain/ValueObjects/UuidValueObject";
 import { UserBirthDate } from "./ValueObjects/UserBirthDate";
 import { Email } from "./ValueObjects/Email";
+import { Entity } from "components/shared/domain/Entity";
 //Principal class of Users
-export class User {
+export class User  extends Entity{
 	public _id?: UuidValueObject;
 	public firstname: string;
 	public lastname: string;
@@ -22,7 +23,8 @@ export class User {
 	public daily_spend: number; 
 
 	constructor(initObject: UserJsonDocument) {
-		this._id = initObject._id ? new UuidValueObject(initObject._id) : undefined;
+		super()
+		this._id = initObject._id ? new UuidValueObject(initObject._id) : UuidValueObject.random();
 		this.firstname = initObject.firstname;
 		this.lastname = initObject.lastname;
 		this.username = initObject.username;
