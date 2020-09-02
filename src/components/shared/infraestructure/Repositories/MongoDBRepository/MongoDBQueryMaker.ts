@@ -1,5 +1,5 @@
-import { QueryMaker } from "../QueryMaker";
-import { ConsulterOptions } from "../OptionsRepository";
+import { QueryMaker } from "../../../domain/Repositories/QueryMaker";
+import { ConsulterOptions } from "../../../domain/Repositories/OptionsRepository";
 
 const SIMPLE_OPS = ["eq", "ne", "gt", "gte", "lt", "lte", "like", "notLike"];
 const ARRAY_OPS = [ "in", "notIn"];

@@ -4,9 +4,9 @@ import { createNamespace, getNamespace } from "continuation-local-storage";
 import { NextFunction, Request, Response } from "express";
 //Personal imports
 import { MySQLQueryMaker } from "./MySQLQueryMaker";
-import { Repository, MultiTenantRepository } from "../Repository";
-import { QueryMaker } from "../QueryMaker";
-import { ConsulterOptions } from "../OptionsRepository";
+import { Repository, MultiTenantRepository } from "../../../domain/Repositories/Repository";
+import { QueryMaker } from "../../../domain/Repositories/QueryMaker";
+import { ConsulterOptions } from "../../../domain/Repositories/OptionsRepository";
 import { Logger } from "../../../../../libs/Logger";
 import { GeneralError, BadRequest } from "../../../../../libs/Errors";
 import { JsonDocument } from "components/shared/domain/Types/JsonDocument";

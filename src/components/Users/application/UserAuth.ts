@@ -1,6 +1,6 @@
 import { User } from "../domain/User";
 import { BadRequest, Unauthorized } from "../../../libs/Errors";
-import { Repository } from "../../shared/infraestructure/Repositories/Repository";
+import { Repository } from "../../shared/domain/Repositories/Repository";
 import { UserJsonDocument } from "../domain/Types/UserJsonDocument";
 
 /**

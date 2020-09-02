@@ -1,12 +1,12 @@
 
-import { Repository, MultiTenantRepository } from "../Repository";
+import { Repository, MultiTenantRepository } from "../../../domain/Repositories/Repository";
 import { Logger } from "libs/Logger";
 import { JsonDocument } from "components/shared/domain/Types/JsonDocument";
 import { GeneralError } from "../../../../../libs/Errors";
-import { ConsulterOptions } from "../OptionsRepository";
+import { ConsulterOptions } from "../../../domain/Repositories/OptionsRepository";
 import { Nulleable } from "components/shared/domain/Types/Nulleable";
 import { NextFunction, Request, Response } from "express";
-import { QueryMaker } from "../QueryMaker";
+import { QueryMaker } from "../../../domain/Repositories/QueryMaker";
 import { MongoDBQueryMaker } from "./MongoDBQueryMaker";
 import { MongoClient, Db, Collection} from 'mongodb'
 
