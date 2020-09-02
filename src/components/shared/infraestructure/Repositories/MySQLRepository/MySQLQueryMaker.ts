@@ -1,5 +1,5 @@
 import { QueryMaker } from "../../../domain/Repositories/QueryMaker";
-import { ConsulterOptions } from "../../../domain/Repositories/OptionsRepository";
+import { ConsulterOptions } from "../../../domain/Types/OptionsRepository";
 
 const SIMPLE_OPS = ["eq", "ne", "gt", "gte", "lt", "lte", "like", "notLike"];
 const BOOLEAN_OPS = ["is", "isNot"];
@@ -9,15 +9,15 @@ const ARRAY_OPS = ["between", "notBetween", "in", "notIn"];
  * Implement of QueryMaker interface to MySQL
  */
 export class MySQLQueryMaker implements QueryMaker {
-	public findMany(table: string, options: ConsulterOptions = {}): any {
+	public findMany(model: string, options: ConsulterOptions = {}): any {
 		//Make the fields to return section
 		let fields = "";
 		// if the user set the fields then make a string with that
-		if (options.fields) fields = options.fields.map((value: any) => table + "." + value).join(",");
-		else fields = `${table}.*`; // else just return all fields
+		if (options.fields) fields = options.fields.map((value: any) => model + "." + value).join(",");
+		else fields = `${model}.*`; // else just return all fields
 
 		// make the principal conditional of quey
-		let condtional = this.conditionalMaker(table, options.where);
+		let condtional = this.conditionalMaker(model, options.where);
 
 		//Section to inner join, the inner sentence, the fields of join and the conditional of the join
 		let innerJoin: string = "";
@@ -25,33 +25,33 @@ export class MySQLQueryMaker implements QueryMaker {
 		if (options.include) {
 			// Make the fields of the inner
 			let innerFields: string[] = options.include.map((include: any) => {
-				if (options.fields) return include.fields.map((value: any) => include.table + "." + value).join(",");
-				else return "," + include.table + ".*";
+				if (options.fields) return include.fields.map((value: any) => include.model + "." + value).join(",");
+				else return "," + include.model + ".*";
 			});
 			// join them to the fields of main
 			fields += innerFields.join(",");
 			//Make the inner join sentence
 			innerJoin = options.include
 				.map((value: any) => {
-					return `INNER JOIN ${value.table} ON ${value.table}.id = ${table}.${value.table}Id`;
+					return `INNER JOIN ${value.model} ON ${value.model}.id = ${model}.${value.model}Id`;
 				})
 				.join(" ");
 			// Create the conditionals to every join
-			innerConditionals = options.include.map((value: any) => this.conditionalMaker(value.table, value.where)).join(" AND ");
+			innerConditionals = options.include.map((value: any) => this.conditionalMaker(value.model, value.where)).join(" AND ");
 		}
 
 		//Return the consult complete
-		return `SELECT ${fields} FROM ${table} ${innerJoin} ${condtional ? `WHERE ${condtional}` : ``} ${
+		return `SELECT ${fields} FROM ${model} ${innerJoin} ${condtional ? `WHERE ${condtional}` : ``} ${
 			condtional && innerConditionals ? ` AND ${innerConditionals}` : innerConditionals ? `WHERE ${innerConditionals}` : ""
 		} ORDER BY ${options.orderField || "id"} ${options.order || "asc"} LIMIT ${options.limit || "100"} offset ${options.page ? options.page + "00" : "0"} `;
 	}
 
-	public findOne(table: string, id: number | string, options: ConsulterOptions = {}): any {
+	public findOne(model: string, id: number | string, options: ConsulterOptions = {}): any {
 		//Make the fields to return section
 		let fields = "";
 		// if the user set the fields then make a string with that
-		if (options.fields) fields = options.fields.map((value: any) => table + "." + value).join(",");
-		else fields = `${table}.*`; // else just return all fields
+		if (options.fields) fields = options.fields.map((value: any) => model + "." + value).join(",");
+		else fields = `${model}.*`; // else just return all fields
 
 		//Section to inner join, the inner sentence, the fields of join and the conditional of the join
 		let innerJoin: string = "";
@@ -59,28 +59,28 @@ export class MySQLQueryMaker implements QueryMaker {
 		if (options.include) {
 			// Make the fields of the inner
 			let innerFields: string[] = options.include.map((include: any) => {
-				if (options.fields) return include.fields.map((value: any) => include.table + "." + value).join(",");
-				else return "," + include.table + ".*";
+				if (options.fields) return include.fields.map((value: any) => include.model + "." + value).join(",");
+				else return "," + include.model + ".*";
 			});
 			// join them to the fields of main
 			fields += innerFields.join(",");
 			//Make the inner join sentence
 			innerJoin = options.include
 				.map((value: any) => {
-					return `INNER JOIN ${value.table} ON ${value.table}.id = ${table}.${value.table}Id`;
+					return `INNER JOIN ${value.model} ON ${value.model}.id = ${model}.${value.model}Id`;
 				})
 				.join(" ");
 			// Create the conditionals to every join
-			// innerConditionals = options.include.map((value: any) => this.conditionalMaker(value.table, value.where)).join(" AND ");
+			// innerConditionals = options.include.map((value: any) => this.conditionalMaker(value.model, value.where)).join(" AND ");
 		}
 		//Return the consult complete
-		return `SELECT ${fields} FROM ${table} ${innerJoin} WHERE ${table}.id = ${id}`;
+		return `SELECT ${fields} FROM ${model} ${innerJoin} WHERE ${model}.id = ${id}`;
 	}
 
-	public count(table: string, options: ConsulterOptions): any {
+	public count(model: string, options: ConsulterOptions): any {
 		// make the principal conditional of quey
-		let condtional = this.conditionalMaker(table, options.where);
-		return `SELECT COUNT(id) as total FROM ${table} ${condtional ? `WHERE ${condtional}` : ""}`;
+		let condtional = this.conditionalMaker(model, options.where);
+		return `SELECT COUNT(id) as total FROM ${model} ${condtional ? `WHERE ${condtional}` : ""}`;
 	}
 
 	public parseOptions(options: any): ConsulterOptions {
@@ -100,10 +100,10 @@ export class MySQLQueryMaker implements QueryMaker {
 
 	/**
 	 * Make the structure of the conditional expression
-	 * @param table Targer table name
+	 * @param model Targer model name
 	 * @param where Object with the conditionals
 	 */
-	private conditionalMaker(table: string, where?: any): string {
+	private conditionalMaker(model: string, where?: any): string {
 		if (!where) return "";
 		// expressions arrays
 		let conditions: string[] = [];
@@ -114,17 +114,17 @@ export class MySQLQueryMaker implements QueryMaker {
 		//For every key on where, and, or and not elements on the conditional object
 		// We make an expression and push into an array to make the main conditional expression later
 		for (const key in where.and) {
-			conditionsAnd.push(this.makeOperator(table, key, where.and[key]));
+			conditionsAnd.push(this.makeOperator(model, key, where.and[key]));
 		}
 		for (const key in where.or) {
-			conditionsOr.push(this.makeOperator(table, key, where.or[key]));
+			conditionsOr.push(this.makeOperator(model, key, where.or[key]));
 		}
 		for (const key in where.not) {
-			conditionsNot.push(this.makeOperator(table, key, where.not[key]));
+			conditionsNot.push(this.makeOperator(model, key, where.not[key]));
 		}
 		for (const key in where) {
 			if (key !== "and" && key !== "or" && key !== "not") {
-				conditions.push(this.makeOperator(table, key, where[key]));
+				conditions.push(this.makeOperator(model, key, where[key]));
 			}
 		}
 		let and = "";
@@ -147,13 +147,13 @@ export class MySQLQueryMaker implements QueryMaker {
 
 	/**
 	 * Make the minimal condition unit
-	 * @param table Target table
+	 * @param model Target model
 	 * @param name property name
 	 * @param value property value
 	 */
-	private makeOperator(table: string, name: string, value: any): string {
+	private makeOperator(model: string, name: string, value: any): string {
 		//If the propery is an group object then make an another conditional expression
-		if (name == "and" || name == "or" || name == "not") return this.conditionalMaker(table, { [name]: value });
+		if (name == "and" || name == "or" || name == "not") return this.conditionalMaker(model, { [name]: value });
 
 		// If the property come with an operator
 		if (name.includes("-")) {
@@ -168,26 +168,26 @@ export class MySQLQueryMaker implements QueryMaker {
 			if (BOOLEAN_OPS.includes(op) && !["null", "false", "true"].includes(value)) throw new Error(`El operador ${op} solo admite valores booleanos`);
 
 			//Make the expression for the correspondient
-			if (op == "eq") return `${table}.${key} = '${value}'`;
-			if (op == "ne") return `${table}.${key} != '${value}'`;
-			if (op == "gt") return `${table}.${key} > '${value}'`;
-			if (op == "gte") return `${table}.${key} >= '${value}'`;
-			if (op == "lt") return `${table}.${key} < '${value}'`;
-			if (op == "lte") return `${table}.${key} <= '${value}'`;
-			if (op == "is") return `${table}.${key} IS ${value}`;
-			if (op == "isNot") return `${table}.${key} IS NOT ${value}`;
-			if (op == "between") return `${table}.${key} BETWEEN '${value[0]}' AND '${value[1]}'`;
-			if (op == "notBetween") return `${table}.${key} NOT BETWEEN '${value[0]}' AND '${value[1]}'`;
-			if (op == "in") return `${table}.${key} IN (${value.join(",")})`;
-			if (op == "notIn") return `${table}.${key} NOT IN (${value.join(",")})`;
-			if (op == "like") return `${table}.${key} LIKE '${value}'`;
-			if (op == "notLike") return `${table}.${key} NOT LIKE '${value}'`;
+			if (op == "eq") return `${model}.${key} = '${value}'`;
+			if (op == "ne") return `${model}.${key} != '${value}'`;
+			if (op == "gt") return `${model}.${key} > '${value}'`;
+			if (op == "gte") return `${model}.${key} >= '${value}'`;
+			if (op == "lt") return `${model}.${key} < '${value}'`;
+			if (op == "lte") return `${model}.${key} <= '${value}'`;
+			if (op == "is") return `${model}.${key} IS ${value}`;
+			if (op == "isNot") return `${model}.${key} IS NOT ${value}`;
+			if (op == "between") return `${model}.${key} BETWEEN '${value[0]}' AND '${value[1]}'`;
+			if (op == "notBetween") return `${model}.${key} NOT BETWEEN '${value[0]}' AND '${value[1]}'`;
+			if (op == "in") return `${model}.${key} IN (${value.join(",")})`;
+			if (op == "notIn") return `${model}.${key} NOT IN (${value.join(",")})`;
+			if (op == "like") return `${model}.${key} LIKE '${value}'`;
+			if (op == "notLike") return `${model}.${key} NOT LIKE '${value}'`;
 
 			//If the operator is not valid
 			throw new Error(`El operador ${op} no es valido`);
 		} else {
 			// If no have any operator
-			return `${table}.${name} = '${value}'`;
+			return `${model}.${name} = '${value}'`;
 		}
 	}
 }

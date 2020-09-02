@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ConsulterOptions } from "./OptionsRepository";
+import { ConsulterOptions } from "../Types/OptionsRepository";
 import { JsonDocument } from "components/shared/domain/Types/JsonDocument";
 import { Nulleable } from "components/shared/domain/Types/Nulleable";
 
@@ -10,10 +10,10 @@ import { Nulleable } from "components/shared/domain/Types/Nulleable";
 export interface Repository {
 	/**
 	 * Method to register one connection if hasn't been registed and return the connection
-	 * @param tenant Identifier of the tenant database to attack
+	 * @param database Identifier of the tenant database to attack
 	 * @returns The connection Pool to the tenant database
 	 */
-	setConnection(tenant?: string): any;
+	setConnection(database?: string): any;
 	/**
 	 * Method thar return a list of records of the target table
 	 * @param model The name of the target table
@@ -61,7 +61,7 @@ export interface Repository {
 	 * @param sql Custom query
 	 * @returns An array of results in relation with the query
 	 */
-	execute(sql: string): Promise<Array<any>>;
+	execute(query: any): Promise<Array<any>>;
 
 	/**
 	 * Methd that count the number of records on a table

@@ -1,17 +1,17 @@
 import { QueryMaker } from "../../../domain/Repositories/QueryMaker";
-import { ConsulterOptions } from "../../../domain/Repositories/OptionsRepository";
+import { ConsulterOptions } from "../../../domain/Types/OptionsRepository";
 
 const SIMPLE_OPS = ["eq", "ne", "gt", "gte", "lt", "lte", "like", "notLike"];
 const ARRAY_OPS = [ "in", "notIn"];
 
 
 export class MongoDBQueryMaker implements QueryMaker {
-    public findMany(table: string, options: ConsulterOptions = {}): any {
+    public findMany(model: string, options: ConsulterOptions = {}): any {
         let fields: any = {};
 
         if(options.fields) options.fields.forEach((field)=> fields[`${field}`]=1);
 
-        let conditional = this.conditionalMaker(table, options.where);
+        let conditional = this.conditionalMaker(model, options.where);
 
         //Return the object to make the query
         return { 
@@ -24,7 +24,7 @@ export class MongoDBQueryMaker implements QueryMaker {
         }
     }
 
-    public findOne(table: string, id: number | string, options: ConsulterOptions = {}): any {
+    public findOne(model: string, id: number | string, options: ConsulterOptions = {}): any {
         let fields: any = {};
 
         if(options.fields) options.fields.forEach((field)=> fields[`${field}`]=1);
@@ -35,7 +35,7 @@ export class MongoDBQueryMaker implements QueryMaker {
         }
 
     }
-    public count(table: string, options: ConsulterOptions): any {
+    public count(model: string, options: ConsulterOptions): any {
         let conditional = this.conditionalMaker(options.where);
         return {
             conditional,
@@ -57,22 +57,22 @@ export class MongoDBQueryMaker implements QueryMaker {
 		return trueOptions;
     }
 
-    private conditionalMaker(table:string, where?:any): any{
+    private conditionalMaker(model:string, where?:any): any{
         if(!where) return {};
         let $or = [];
         let $and = [];
         let conditions:any = {};
 
         for (const key in where.and) {
-            $and.push(this.makeOperator(table, key, where.and[key]));
+            $and.push(this.makeOperator(model, key, where.and[key]));
         }
         for (const key in where.or) {
-			$or.push(this.makeOperator(table, key, where.or[key]));
+			$or.push(this.makeOperator(model, key, where.or[key]));
 		}
         
         for (const key in where) {
 			if (key !== "and" && key !== "or") {
-                Object.assign(conditions, this.makeOperator(table, key, where[key]))
+                Object.assign(conditions, this.makeOperator(model, key, where[key]))
 			}
         }
         
@@ -82,9 +82,9 @@ export class MongoDBQueryMaker implements QueryMaker {
         return conditions;
     }
 
-    private makeOperator(table: string, name:string, value: any): any{
+    private makeOperator(model: string, name:string, value: any): any{
         //If the propery is an group object then make an another conditional expression
-        if (name == "and" || name == "or") return this.conditionalMaker(table, { [name]: value });
+        if (name == "and" || name == "or") return this.conditionalMaker(model, { [name]: value });
         
         if (!name.includes('-')) return { [`${name}`]: value }
 
