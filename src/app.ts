@@ -8,11 +8,11 @@ import swaggerUI from "swagger-ui-express";
 import cookieParser from "cookie-parser";
 
 import { routes } from "./components/shared/infraestructure/Clients/RESTClient";
-import { MySQLConsulter } from "./components/shared/infraestructure/Repositories/MySQLRepository/MySQLRepository";
+import { MySQLRepository } from "./components/shared/infraestructure/Repositories/MySQLRepository/MySQLRepository";
 
 import { Logger } from "./libs/Logger";
 import { port, database } from "./config/keys";
-import { errorHandler, RouteNotFound } from "./libs/Errors";
+import { errorHandler, RouteNotFound } from "./components/shared/domain/Errors";
 import { swaggerDocument } from "./docs";
 
 /**
@@ -64,7 +64,7 @@ export class App {
 	}
 
 	private routes() {
-		routes(this.app, new MySQLConsulter(database));
+		routes(this.app, new MySQLRepository(database));
 	}
 
 	private errors() {

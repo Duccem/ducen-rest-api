@@ -8,7 +8,7 @@ import { Repository, MultiTenantRepository } from "../../../domain/Repositories/
 import { QueryMaker } from "../../../domain/Repositories/QueryMaker";
 import { ConsulterOptions } from "../../../domain/Repositories/OptionsRepository";
 import { Logger } from "../../../../../libs/Logger";
-import { GeneralError, BadRequest } from "../../../../../libs/Errors";
+import { GeneralError, BadRequest } from "../../../domain/Errors";
 import { JsonDocument } from "components/shared/domain/Types/JsonDocument";
 import { Nulleable } from "components/shared/domain/Types/Nulleable";
 /**

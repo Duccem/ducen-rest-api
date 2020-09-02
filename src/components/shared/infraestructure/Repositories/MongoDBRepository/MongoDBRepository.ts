@@ -2,7 +2,7 @@
 import { Repository, MultiTenantRepository } from "../../../domain/Repositories/Repository";
 import { Logger } from "libs/Logger";
 import { JsonDocument } from "components/shared/domain/Types/JsonDocument";
-import { GeneralError } from "../../../../../libs/Errors";
+import { GeneralError } from "../../../domain/Errors";
 import { ConsulterOptions } from "../../../domain/Repositories/OptionsRepository";
 import { Nulleable } from "components/shared/domain/Types/Nulleable";
 import { NextFunction, Request, Response } from "express";
