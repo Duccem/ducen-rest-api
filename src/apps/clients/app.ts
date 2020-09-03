@@ -7,12 +7,12 @@ import ducentrace from "ducentrace";
 import swaggerUI from "swagger-ui-express";
 import cookieParser from "cookie-parser";
 
-import { routes } from "./contexts/shared/infraestructure/Clients/RESTClient";
-import { MySQLRepository } from "./contexts/shared/infraestructure/Repositories/MySQLRepository/MySQLRepository";
+import { routes } from "../../contexts/shared/infraestructure/Clients/RESTClient";
+import { MySQLRepository } from "../../contexts/shared/infraestructure/Repositories/MySQLRepository/MySQLRepository";
 
-import { Logger } from "./libs/Logger";
+import { Logger } from "../../contexts/shared/infraestructure/Logger";
 import { port, database } from "./config/keys";
-import { errorHandler, RouteNotFound } from "./contexts/shared/domain/Errors";
+import { errorHandler, RouteNotFound } from "../../contexts/shared/domain/Errors";
 import { swaggerDocument } from "./docs";
 
 /**

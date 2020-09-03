@@ -12,7 +12,7 @@ import { Nulleable } from "contexts/shared/domain/Types/Nulleable";
 import { DatabaseOptions } from "contexts/shared/domain/Types/DatabaseOptions";
 import { ConsulterOptions } from "contexts/shared/domain/Types/OptionsRepository";
 import { GeneralError } from "contexts/shared/domain/Errors";
-import { Logger } from "libs/Logger";
+import { Logger } from "contexts/shared/infraestructure/Logger";
 
 //Own context
 import { MongoDBQueryMaker } from "./MongoDBQueryMaker";
