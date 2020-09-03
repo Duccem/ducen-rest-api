@@ -11,7 +11,7 @@ export class EventEmitterBus  {
         this.registerSubscribers(subscribers);
     }    
 
-    registerSubscribers(subscribers?: DomainEventSubscriber<DomainEvent>[]) {
+    public registerSubscribers(subscribers?: DomainEventSubscriber<DomainEvent>[]) {
         subscribers?.map(subscriber => {
             this.registerSubscriber(subscriber);
         });
@@ -25,7 +25,7 @@ export class EventEmitterBus  {
         });
     }
 
-    publish(events: DomainEvent[]): void {
+    public publish(events: DomainEvent[]): void {
         events.map(event => this.channel.sendToQueue(event.eventName, new Buffer(JSON.stringify(event.toPrimitive()))));
     }
 }
