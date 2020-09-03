@@ -19,4 +19,7 @@ export class UserCreatedDomainEvent extends DomainEvent {
             username: this.username
         }
     }
+    public static fromPrimitives(object: any): UserCreatedDomainEvent{
+        return new UserCreatedDomainEvent(object)
+    }
 }

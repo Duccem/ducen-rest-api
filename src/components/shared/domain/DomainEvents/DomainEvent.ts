@@ -2,6 +2,7 @@ import { UuidValueObject } from '../ValueObjects/UuidValueObject';
 
 export abstract class DomainEvent {
   static EVENT_NAME: string;
+  static fromPrimitives: (...args: any[]) => DomainEvent;
   readonly entityId: string;
   readonly eventId: string;
   readonly occurredOn: Date;

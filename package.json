@@ -23,6 +23,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@types/continuation-local-storage": "^3.2.2",
+		"amqplib": "^0.6.0",
 		"axios": "^0.19.2",
 		"bcryptjs": "^2.4.3",
 		"continuation-local-storage": "^3.2.1",
@@ -47,6 +48,7 @@
 		"uuid-validate": "0.0.3"
 	},
 	"devDependencies": {
+		"@types/amqplib": "^0.5.13",
 		"@types/bcryptjs": "^2.4.2",
 		"@types/cookie-parser": "^1.4.2",
 		"@types/cors": "^2.8.6",
