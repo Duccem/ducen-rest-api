@@ -1,6 +1,6 @@
  
-import { DomainEventClass, DomainEvent } from "components/shared/domain/DomainEvents/DomainEvent";
-import { DomainEventSubscriber } from "components/shared/domain/DomainEvents/DomainEventSubscriber";
+import { DomainEventClass, DomainEvent } from "contexts/shared/domain/DomainEvents/DomainEvent";
+import { DomainEventSubscriber } from "contexts/shared/domain/DomainEvents/DomainEventSubscriber";
 
 type Mapping = Map<string, DomainEventClass>;
 

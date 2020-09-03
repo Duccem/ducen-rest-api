@@ -5,13 +5,13 @@ import { createNamespace, getNamespace } from "continuation-local-storage";
 import { NextFunction, Request, Response } from "express";
 
 //Personal Imports
-import { Repository, MultiTenantRepository } from "components/shared/domain/Repositories/Repository";
-import { QueryMaker } from "components/shared/domain/Repositories/QueryMaker";
-import { JsonDocument } from "components/shared/domain/Types/JsonDocument";
-import { Nulleable } from "components/shared/domain/Types/Nulleable";
-import { DatabaseOptions } from "components/shared/domain/Types/DatabaseOptions";
-import { ConsulterOptions } from "components/shared/domain/Types/OptionsRepository";
-import { GeneralError } from "components/shared/domain/Errors";
+import { Repository, MultiTenantRepository } from "contexts/shared/domain/Repositories/Repository";
+import { QueryMaker } from "contexts/shared/domain/Repositories/QueryMaker";
+import { JsonDocument } from "contexts/shared/domain/Types/JsonDocument";
+import { Nulleable } from "contexts/shared/domain/Types/Nulleable";
+import { DatabaseOptions } from "contexts/shared/domain/Types/DatabaseOptions";
+import { ConsulterOptions } from "contexts/shared/domain/Types/OptionsRepository";
+import { GeneralError } from "contexts/shared/domain/Errors";
 import { Logger } from "libs/Logger";
 
 //Own context

@@ -1,7 +1,7 @@
 
 import { Channel } from "amqplib";
-import { DomainEvent } from 'components/shared/domain/DomainEvents/DomainEvent';
-import { DomainEventSubscriber } from 'components/shared/domain/DomainEvents/DomainEventSubscriber';
+import { DomainEvent } from 'contexts/shared/domain/DomainEvents/DomainEvent';
+import { DomainEventSubscriber } from 'contexts/shared/domain/DomainEvents/DomainEventSubscriber';
 
 
 export class EventEmitterBus  {

@@ -1,6 +1,6 @@
-import { DomainEvent } from 'components/shared/domain/DomainEvents/DomainEvent';
-import { DomainEventSubscriber } from 'components/shared/domain/DomainEvents/DomainEventSubscriber';
-import { EventBus } from 'components/shared/domain/DomainEvents/EventBus';
+import { DomainEvent } from 'contexts/shared/domain/DomainEvents/DomainEvent';
+import { DomainEventSubscriber } from 'contexts/shared/domain/DomainEvents/DomainEventSubscriber';
+import { EventBus } from 'contexts/shared/domain/DomainEvents/EventBus';
 import { EventEmitterBus } from './EventEmitterBus';
 import { connect, Channel, Connection } from "amqplib";
 

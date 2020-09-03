@@ -3,7 +3,7 @@ import { UserJsonDocument } from "./Types/UserJsonDocument";
 import { UuidValueObject } from "../../shared/domain/ValueObjects/UuidValueObject";
 import { UserBirthDate } from "./ValueObjects/UserBirthDate";
 import { Email } from "./ValueObjects/Email";
-import { Entity } from "components/shared/domain/Entity";
+import { Entity } from "contexts/shared/domain/Entity";
 //Principal class of Users
 export class User  extends Entity{
 	public _id?: UuidValueObject;

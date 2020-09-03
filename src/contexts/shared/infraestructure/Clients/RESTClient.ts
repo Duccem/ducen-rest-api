@@ -1,5 +1,5 @@
 import { Application } from "express";
-import { Repository } from "components/shared/domain/Repositories/Repository";
+import { Repository } from "contexts/shared/domain/Repositories/Repository";
 
 //Controllers imports
 import { UserAuth } from "../../../Users/application/UserAuth";
