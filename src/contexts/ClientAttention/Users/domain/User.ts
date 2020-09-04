@@ -1,6 +1,6 @@
 import { Password } from "./ValueObjects/Password";
 import { UserJsonDocument } from "./Types/UserJsonDocument";
-import { UuidValueObject } from "../../shared/domain/ValueObjects/UuidValueObject";
+import { UuidValueObject } from "../../../shared/domain/ValueObjects/UuidValueObject";
 import { UserBirthDate } from "./ValueObjects/UserBirthDate";
 import { Email } from "./ValueObjects/Email";
 import { Entity } from "contexts/shared/domain/Entity";

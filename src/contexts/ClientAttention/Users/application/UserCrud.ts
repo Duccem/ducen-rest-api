@@ -1,9 +1,9 @@
 import { User } from "../domain/User";
 import { UserJsonDocument } from "../domain/Types/UserJsonDocument";
-import { UuidValueObject} from "../../shared/domain/ValueObjects/UuidValueObject";
-import { InvalidID, ElementNotFound } from "../../shared/domain/Errors";
-import { Repository } from "../../shared/domain/Repositories/Repository";
-import { ConsulterOptions } from "../../shared/domain/Types/OptionsRepository";
+import { UuidValueObject} from "../../../shared/domain/ValueObjects/UuidValueObject";
+import { InvalidID, ElementNotFound } from "../../../shared/domain/Errors";
+import { Repository } from "../../../shared/domain/Repositories/Repository";
+import { ConsulterOptions } from "../../../shared/domain/Types/OptionsRepository";
 
 export class UserCrud {
 	private repository: Repository;

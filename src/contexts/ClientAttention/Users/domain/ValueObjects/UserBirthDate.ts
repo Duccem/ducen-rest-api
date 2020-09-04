@@ -1,4 +1,4 @@
-import { DateValueObject } from "../../../shared/domain/ValueObjects/DateValueObjects";
+import { DateValueObject } from "../../../../shared/domain/ValueObjects/DateValueObjects";
 
 export class UserBirthDate extends DateValueObject{
     constructor(value: string){

@@ -2,10 +2,10 @@ import { Application } from "express";
 import { Repository } from "contexts/shared/domain/Repositories/Repository";
 
 //Controllers imports
-import { UserAuth } from "../../../Users/application/UserAuth";
+import { UserAuth } from "../../../ClientAttention/Users/application/UserAuth";
 
 //Routers imports
-import { UserRouter } from "../../../Users/infraestructure/UserRouter";
+import { UserRouter } from "../../../ClientAttention/Users/infraestructure/UserRouter";
 
 export const routes = (app: Application, repository: Repository) => {
 	//Controllers initializations

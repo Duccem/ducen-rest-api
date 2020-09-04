@@ -1,4 +1,4 @@
-import { StringValueObject } from "../../../shared/domain/ValueObjects/StringValueObject";
+import { StringValueObject } from "../../../../shared/domain/ValueObjects/StringValueObject";
 import { InvalidArgument } from "contexts/shared/domain/Errors";
 
 export class Email extends StringValueObject{

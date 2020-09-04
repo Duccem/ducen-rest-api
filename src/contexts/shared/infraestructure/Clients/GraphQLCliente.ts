@@ -2,10 +2,10 @@ import { Application } from "express";
 import { Repository } from "contexts/shared/domain/Repositories/Repository";
 
 //Controllers imports
-import { UserAuth } from "../../../Users/application/UserAuth";
+import { UserAuth } from "../../../ClientAttention/Users/application/UserAuth";
 
 //Routers imports
-import { UserResolver } from "../../../Users/infraestructure/UserResolvers";
+import { UserResolver } from "../../../ClientAttention/Users/infraestructure/UserResolvers";
 
 export const resolvers = (app: Application, repository: Repository) => {
 	//Controllers initializations

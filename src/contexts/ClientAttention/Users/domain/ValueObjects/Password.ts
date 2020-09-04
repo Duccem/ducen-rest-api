@@ -1,5 +1,5 @@
-import { StringValueObject } from "../../../shared/domain/ValueObjects/StringValueObject";
-import { Authentication } from "../../../shared/infraestructure/Authentication";
+import { StringValueObject } from "../../../../shared/domain/ValueObjects/StringValueObject";
+import { Authentication } from "../../../../shared/infraestructure/Authentication";
 import { InvalidArgument } from "contexts/shared/domain/Errors";
 
 /**
