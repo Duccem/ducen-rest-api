@@ -6,7 +6,7 @@ import { Email } from "./ValueObjects/Email";
 import { Entity } from "contexts/shared/domain/Entity";
 //Principal class of Users
 export class User  extends Entity{
-	public _id?: UuidValueObject;
+	public _id: UuidValueObject;
 	public firstname: string;
 	public lastname: string;
 	public username: string;

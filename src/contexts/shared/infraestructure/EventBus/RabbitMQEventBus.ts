@@ -12,8 +12,8 @@ export class RabbitMQEventBus implements EventBus {
         this.connection = connection;
     }
 
-    public static async createConnectionChannel(): Promise<any>{
-        let connection = await connect('');
+    public static async createConnectionChannel(config: any): Promise<any>{
+        let connection = await connect(config.host);
         let channel = await connection.createChannel();
         return { connection, channel };
     }

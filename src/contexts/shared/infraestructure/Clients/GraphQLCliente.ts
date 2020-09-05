@@ -2,7 +2,7 @@ import { Application } from "express";
 import { Repository } from "contexts/shared/domain/Repositories/Repository";
 
 //Controllers imports
-import { UserAuth } from "../../../ClientAttention/Users/application/UserAuth";
+import { UserAuth } from "../../../ClientAttention/Users/application/UserCommands";
 
 //Routers imports
 import { UserResolver } from "../../../ClientAttention/Users/infraestructure/UserResolvers";

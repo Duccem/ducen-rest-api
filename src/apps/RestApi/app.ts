@@ -1,19 +1,20 @@
 ////ARCHIVO DE CONFIGURACION DEL SERVIDOR
 //Requerimos los modulos necesarios para la app
-import express, { Application } from "express";
-import path from "path";
+import express, { Application, Router } from "express";
+//import path from "path";
 import cors from "cors";
 import ducentrace from "ducentrace";
-import swaggerUI from "swagger-ui-express";
+//import swaggerUI from "swagger-ui-express";
 import cookieParser from "cookie-parser";
 
-import { routes } from "../../contexts/shared/infraestructure/Clients/RESTClient";
-import { MySQLRepository } from "../../contexts/shared/infraestructure/Repositories/MySQLRepository/MySQLRepository";
+import { registerRoutes } from "./routes/router";
+import { MongoDBRepoitory } from "contexts/shared/infraestructure/Repositories/MongoDBRepository/MongoDBRepository";
+import { RabbitMQEventBus } from "contexts/shared/infraestructure/EventBus/RabbitMQEventBus";
 
 import { Logger } from "../../contexts/shared/infraestructure/Logger";
-import { port, database } from "./config/keys";
+import { port, database, messageQ } from "./config/keys";
 import { errorHandler, RouteNotFound } from "../../contexts/shared/domain/Errors";
-import { swaggerDocument } from "./docs";
+//import { swaggerDocument } from "./docs";
 
 /**
  * Class of the principal application of the server
@@ -48,23 +49,28 @@ export class App {
 		this.app.use(express.json());
 		this.app.use(express.urlencoded({ extended: false }));
 		this.app.use(ducentrace());
-		this.app.use(
-			"/",
-			swaggerUI.serve,
-			swaggerUI.setup(swaggerDocument, {
-				customCss: ".swagger-ui .topbar { display: none }",
-				customSiteTitle: "Ducen rest api",
-			})
-		);
-		this.app.use((req, res, next) => {
+		// this.app.use(
+		// 	"/",
+		// 	swaggerUI.serve,
+		// 	swaggerUI.setup(swaggerDocument, {
+		// 		customCss: ".swagger-ui .topbar { display: none }",
+		// 		customSiteTitle: "Ducen rest api",
+		// 	})
+		// );
+		this.app.use((req, _res, next) => {
 			req.logger = new Logger();
 			next();
 		});
-		this.app.use("/api/images/", express.static(path.resolve("public/images")));
+		// this.app.use("/api/images/", express.static(path.resolve("public/images")));
 	}
 
 	private routes() {
-		routes(this.app, new MySQLRepository(database));
+		RabbitMQEventBus.createConnectionChannel(messageQ).then(({connection, channel}) =>{
+			const mongoRepo = new MongoDBRepoitory(database);
+			const rabbitBus = new RabbitMQEventBus([], connection, channel)
+			const router = Router();
+			registerRoutes(router, mongoRepo, rabbitBus);
+		})
 	}
 
 	private errors() {

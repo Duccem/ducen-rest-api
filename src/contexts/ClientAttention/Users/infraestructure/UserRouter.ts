@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import { UserAuth } from "../application/UserAuth";
+import { UserAuth } from "../application/UserCommands";
 import jwt from "jsonwebtoken";
 
 export class UserRouter {

@@ -1,4 +1,4 @@
-import { UserAuth } from "../application/UserAuth";
+import { UserAuth } from "../application/UserCommands";
 
 export class UserResolver {
 	private controller: UserAuth;
