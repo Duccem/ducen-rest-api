@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ConsulterOptions } from "../Types/OptionsRepository";
-import { JsonDocument } from "contexts/shared/domain/Types/JsonDocument";
-import { Nulleable } from "contexts/shared/domain/Types/Nulleable";
+import { JsonDocument } from "../Types/JsonDocument";
+import { Nulleable } from "../Types/Nulleable";
 
 /**
  * Interface of a Consulter type class that allow to consult and execute queries on a database

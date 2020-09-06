@@ -1,8 +1,8 @@
  
 import { Router, Request, Response, NextFunction } from 'express';
-import { UserController } from "apps/RestApi/controllers/UserController";
-import { Repository } from 'contexts/shared/domain/Repositories/Repository';
-import { EventBus } from 'contexts/shared/domain/DomainEvents/EventBus';
+import { UserController } from "../controllers/UserController";
+import { Repository } from '../../../contexts/shared/domain/Repositories/Repository';
+import { EventBus } from '../../../contexts/shared/domain/DomainEvents/EventBus';
 
 const BASE_ROUTE = 'users';
 

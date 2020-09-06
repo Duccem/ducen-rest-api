@@ -3,7 +3,7 @@ import { UserJsonDocument } from "./Types/UserJsonDocument";
 import { UuidValueObject } from "../../../shared/domain/ValueObjects/UuidValueObject";
 import { UserBirthDate } from "./ValueObjects/UserBirthDate";
 import { Email } from "./ValueObjects/Email";
-import { Entity } from "contexts/shared/domain/Entity";
+import { Entity } from "../../../shared/domain/Entity";
 //Principal class of Users
 export class User  extends Entity{
 	public _id: UuidValueObject;
@@ -43,7 +43,7 @@ export class User  extends Entity{
 
 	public toPrimitives(): UserJsonDocument {
 		return {
-			_id: this._id?.toString(),
+			_id: this._id.toString(),
 			firstname: this.firstname,
 			lastname: this.lastname,
 			username: this.username,

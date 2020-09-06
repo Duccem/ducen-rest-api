@@ -15,10 +15,10 @@ import { port, database, messageQ } from "./config/keys";
 //import { swaggerDocument } from "./docs";
 
 //Shared context domain implematations
-import { Logger } from "contexts/shared/infraestructure/Logger";
-import { MongoDBRepoitory } from "contexts/shared/infraestructure/Repositories/MongoDBRepository/MongoDBRepository";
-import { RabbitMQEventBus } from "contexts/shared/infraestructure/EventBus/RabbitMQEventBus";
-import { errorHandler, RouteNotFound } from "contexts/shared/domain/Errors";
+import { Logger } from "../../contexts/shared/infraestructure/Logger";
+import { MongoDBRepoitory } from "../../contexts/shared/infraestructure/Repositories/MongoDBRepository/MongoDBRepository";
+import { RabbitMQEventBus } from "../../contexts/shared/infraestructure/EventBus/RabbitMQEventBus";
+import { errorHandler, RouteNotFound } from "../../contexts/shared/domain/Errors";
 
 /**
  * Class of the principal application of the server
@@ -31,12 +31,14 @@ import { errorHandler, RouteNotFound } from "contexts/shared/domain/Errors";
 
 export class App {
 	public app: Application;
+	public logger: Logger;
 	/**
 	 *
 	 * @param port the number of the port where the app is started to listen
 	 */
 	constructor(private port?: number | string) {
 		this.app = express();
+		this.logger = new Logger()
 		this.settings();
 		this.middlewares();
 		this.routes();
@@ -62,7 +64,7 @@ export class App {
 		// 	})
 		// );
 		this.app.use((req, _res, next) => {
-			req.logger = new Logger();
+			req.logger = this.logger;
 			next();
 		});
 		// this.app.use("/api/images/", express.static(path.resolve("public/images")));
@@ -71,7 +73,7 @@ export class App {
 	private routes() {
 		RabbitMQEventBus.createConnectionChannel(messageQ)
 			.then(({connection, channel}) =>{
-				const mongoRepo = new MongoDBRepoitory(database);
+				const mongoRepo = new MongoDBRepoitory(database, this.logger);
 				const rabbitBus = new RabbitMQEventBus([], connection, channel)
 				const router = Router();
 				registerRoutes(router, mongoRepo, rabbitBus);

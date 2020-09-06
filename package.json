@@ -4,7 +4,7 @@
 	"description": "API de conexion entre las aplicaciones de la suite de administracion y la base de datos madre",
 	"main": "./dist/index.js",
 	"scripts": {
-		"start": "node ./dist/index.js",
+		"start": "node ./dist/apps/RestApi/index.js",
 		"serve": "concurrently \"tsc -w -p tsconfig.json\" \"nodemon ./dist/index.js\" ",
 		"deploy": "npm run clean && npm run build && pm2 start ./dist/index.js --name ducen-rest-api",
 		"clean": "rimraf ./dist",

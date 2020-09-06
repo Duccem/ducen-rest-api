@@ -1,4 +1,4 @@
-import { DomainEvent } from "contexts/shared/domain/DomainEvents/DomainEvent";
+import { DomainEvent } from "../../../../shared/domain/DomainEvents/DomainEvent";
 
 export class EmailSendedDomainEvent extends DomainEvent {
     static readonly EVENT_NAME = 'email.sended';

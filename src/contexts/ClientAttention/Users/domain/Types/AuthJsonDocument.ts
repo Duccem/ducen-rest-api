@@ -1,5 +1,5 @@
 import { UserJsonDocument } from "./UserJsonDocument";
 export type AuthJsonDocument = {
-	token: string;
-	user: UserJsonDocument;
+	token: string,
+	user: UserJsonDocument,
 };

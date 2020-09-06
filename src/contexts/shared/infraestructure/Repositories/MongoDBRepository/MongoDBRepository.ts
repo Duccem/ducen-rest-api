@@ -5,14 +5,14 @@ import { createNamespace, getNamespace } from "continuation-local-storage";
 import { NextFunction, Request, Response } from "express";
 
 //Personal Imports
-import { Repository, MultiTenantRepository } from "contexts/shared/domain/Repositories/Repository";
-import { QueryMaker } from "contexts/shared/domain/Repositories/QueryMaker";
-import { JsonDocument } from "contexts/shared/domain/Types/JsonDocument";
-import { Nulleable } from "contexts/shared/domain/Types/Nulleable";
-import { DatabaseOptions } from "contexts/shared/domain/Types/DatabaseOptions";
-import { ConsulterOptions } from "contexts/shared/domain/Types/OptionsRepository";
-import { GeneralError } from "contexts/shared/domain/Errors";
-import { Logger } from "contexts/shared/infraestructure/Logger";
+import { Repository, MultiTenantRepository } from "../../../domain/Repositories/Repository";
+import { QueryMaker } from "../../../domain/Repositories/QueryMaker";
+import { JsonDocument } from "../../../domain/Types/JsonDocument";
+import { Nulleable } from "../../../domain/Types/Nulleable";
+import { DatabaseOptions } from "../../../domain/Types/DatabaseOptions";
+import { ConsulterOptions } from "../../../domain/Types/OptionsRepository";
+import { GeneralError } from "../../../domain/Errors";
+import { Logger } from "../../../infraestructure/Logger";
 
 //Own context
 import { MongoDBQueryMaker } from "./MongoDBQueryMaker";

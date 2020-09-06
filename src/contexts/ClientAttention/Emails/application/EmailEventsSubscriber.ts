@@ -1,8 +1,8 @@
-import { Repository } from "contexts/shared/domain/Repositories/Repository";
-import { EventBus } from "contexts/shared/domain/DomainEvents/EventBus";
-import { DomainEventSubscriber } from "contexts/shared/domain/DomainEvents/DomainEventSubscriber";
-import { DomainEventClass, DomainEvent } from "contexts/shared/domain/DomainEvents/DomainEvent";
-import { UserCreatedDomainEvent } from "contexts/ClientAttention/Users/domain/DomainEvents/UserCreatedDomainEvent";
+import { Repository } from "../../../shared/domain/Repositories/Repository";
+import { EventBus } from "../../../shared/domain/DomainEvents/EventBus";
+import { DomainEventSubscriber } from "../../../shared/domain/DomainEvents/DomainEventSubscriber";
+import { DomainEventClass, DomainEvent } from "../../../shared/domain/DomainEvents/DomainEvent";
+import { UserCreatedDomainEvent } from "../../../ClientAttention/Users/domain/DomainEvents/UserCreatedDomainEvent";
 import { EmailSender } from "./EmailSender";
 import { Sender } from "../domain/Sender";
 

@@ -1,6 +1,6 @@
-import { Entity } from "contexts/shared/domain/Entity";
-import { UuidValueObject } from "contexts/shared/domain/ValueObjects/UuidValueObject";
 import { EmailJsonDocument } from "./Types/EmailJsonDocument";
+import { Entity } from "../../../shared/domain/Entity";
+import { UuidValueObject } from "../../../shared/domain/ValueObjects/UuidValueObject";
 
 export class Emails extends Entity {
 

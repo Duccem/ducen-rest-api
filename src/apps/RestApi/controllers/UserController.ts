@@ -1,7 +1,7 @@
 import { Response, Request, NextFunction } from "express";
-import { UserCommands } from "contexts/ClientAttention/Users/application/UserCommands";
-import { Repository } from "contexts/shared/domain/Repositories/Repository";
-import { EventBus } from "contexts/shared/domain/DomainEvents/EventBus";
+import { UserCommands } from "../../../contexts/ClientAttention/Users/application/UserCommands";
+import { Repository } from "../../../contexts/shared/domain/Repositories/Repository";
+import { EventBus } from "../../../contexts/shared/domain/DomainEvents/EventBus";
 
 export class UserController {
     private userCommands: UserCommands

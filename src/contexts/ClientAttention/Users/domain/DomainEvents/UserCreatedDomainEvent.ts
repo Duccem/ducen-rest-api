@@ -1,5 +1,5 @@
-import { DomainEvent } from "contexts/shared/domain/DomainEvents/DomainEvent";
-import { UserCreatedDomainEventBody } from "contexts/shared/domain/Types/UserCreatedDomainEventBody";
+import { UserCreatedDomainEventBody } from "../Types/UserCreatedDomainEventBody";
+import { DomainEvent } from "../../../../shared/domain/DomainEvents/DomainEvent";
 
 export class UserCreatedDomainEvent extends DomainEvent {
     static readonly EVENT_NAME = 'user.created';

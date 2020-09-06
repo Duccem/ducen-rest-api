@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { Unauthorized, GeneralError } from "contexts/shared/domain/Errors";
+import { Unauthorized, GeneralError } from "../domain/Errors";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 

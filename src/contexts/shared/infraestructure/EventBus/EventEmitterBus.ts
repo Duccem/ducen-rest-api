@@ -1,7 +1,7 @@
 
 import { Channel } from "amqplib";
-import { DomainEvent } from 'contexts/shared/domain/DomainEvents/DomainEvent';
-import { DomainEventSubscriber } from 'contexts/shared/domain/DomainEvents/DomainEventSubscriber';
+import { DomainEvent } from '../../domain/DomainEvents/DomainEvent';
+import { DomainEventSubscriber } from '../../domain/DomainEvents/DomainEventSubscriber';
 
 
 export class EventEmitterBus  {
@@ -11,16 +11,17 @@ export class EventEmitterBus  {
         this.registerSubscribers(subscribers);
     }    
 
-    public registerSubscribers(subscribers?: DomainEventSubscriber[]) {
-        subscribers?.map(subscriber => {
+    public registerSubscribers(subscribers: DomainEventSubscriber[]) {
+        subscribers.map(subscriber => {
             this.registerSubscriber(subscriber);
         });
     }
 
     private registerSubscriber(subscriber: DomainEventSubscriber) {
-        subscriber.subscribedTo().map(event => {
+        subscriber.subscribedTo().map( async (event) => {
+            await this.channel.assertQueue(event.EVENT_NAME)
             this.channel.consume(event.EVENT_NAME, (msg) => {
-                subscriber.on(event.fromPrimitives(JSON.parse(msg?.content.toString() as string)));
+                subscriber.on(event.fromPrimitives(JSON.parse(msg ? msg.content.toString() as string : '')));
             });
         });
     }

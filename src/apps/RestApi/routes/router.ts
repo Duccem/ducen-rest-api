@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import glob from 'glob';
-import { Repository } from 'contexts/shared/domain/Repositories/Repository';
-import { EventBus } from 'contexts/shared/domain/DomainEvents/EventBus';
+import { Repository } from '../../../contexts/shared/domain/Repositories/Repository';
+import { EventBus } from '../../../contexts/shared/domain/DomainEvents/EventBus';
 
 export function registerRoutes(router: Router, repo: Repository, bus: EventBus) {
-  const routes = glob.sync(__dirname + '/**/*.route.*');
+  const routes = glob.sync(__dirname + '/**/*.routes.*');
   routes.map(route => register(route, router, repo, bus));
 }
 

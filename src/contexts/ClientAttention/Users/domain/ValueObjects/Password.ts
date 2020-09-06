@@ -1,6 +1,6 @@
+import { InvalidArgument } from "../../../../shared/domain/Errors";
 import { StringValueObject } from "../../../../shared/domain/ValueObjects/StringValueObject";
 import { Authentication } from "../../../../shared/infraestructure/Authentication";
-import { InvalidArgument } from "contexts/shared/domain/Errors";
 
 /**
  * Password field that ensure that this value is correct and is encripted

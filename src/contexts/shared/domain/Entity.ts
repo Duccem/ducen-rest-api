@@ -1,4 +1,3 @@
-import { JsonDocument } from "./Types/JsonDocument";
 import { DomainEvent } from "./DomainEvents/DomainEvent";
 export abstract class Entity {
     private domainEvents: Array<DomainEvent>;

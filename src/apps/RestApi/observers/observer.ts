@@ -1,7 +1,7 @@
 import glob from 'glob';
-import { EventBus } from 'contexts/shared/domain/DomainEvents/EventBus';
-import { Repository } from 'contexts/shared/domain/Repositories/Repository';
-import { DomainEventSubscriber } from 'contexts/shared/domain/DomainEvents/DomainEventSubscriber';
+import { EventBus } from '../../../contexts/shared/domain/DomainEvents/EventBus';
+import { Repository } from '../../../contexts/shared/domain/Repositories/Repository';
+import { DomainEventSubscriber } from '../../../contexts/shared/domain/DomainEvents/DomainEventSubscriber';
 
 
 const subscribers = new Array<DomainEventSubscriber>();

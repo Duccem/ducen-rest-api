@@ -7,7 +7,7 @@ import { connect, Channel, Connection } from "amqplib";
 export class RabbitMQEventBus implements EventBus {
     private bus: EventEmitterBus;
     private connection: Connection;
-    constructor(subscribers: Array<DomainEventSubscriber<DomainEvent>>, connection: Connection, channel: Channel) {
+    constructor(subscribers: Array<DomainEventSubscriber>, connection: Connection, channel: Channel) {
         this.bus = new EventEmitterBus(subscribers, channel);
         this.connection = connection;
     }
@@ -15,6 +15,7 @@ export class RabbitMQEventBus implements EventBus {
     public static async createConnectionChannel(config: any): Promise<any>{
         let connection = await connect(config.host);
         let channel = await connection.createChannel();
+        console.log('Connected to rabbit');
         return { connection, channel };
     }
 
@@ -22,7 +23,7 @@ export class RabbitMQEventBus implements EventBus {
         this.bus.publish(events);
     }
 
-    addSubscribers(subscribers: Array<DomainEventSubscriber<DomainEvent>>) {
+    addSubscribers(subscribers: Array<DomainEventSubscriber>) {
         this.bus.registerSubscribers(subscribers);
     }
 }
