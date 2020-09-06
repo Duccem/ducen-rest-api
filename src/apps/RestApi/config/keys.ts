@@ -14,7 +14,7 @@ export const messageQ = {
 
 export const email = {
 	email: process.env.EMAIL,
-	password: process.env.EMAIL_PASSORD,
+	password: process.env.EMAIL_PASSWORD,
 	port: process.env.EMAIL_PORT
 }
 export const tokenKey = process.env.TOKEN_KEY;
