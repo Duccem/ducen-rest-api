@@ -4,11 +4,11 @@ import { EmailJsonDocument } from "./Types/EmailJsonDocument";
 
 export class Emails extends Entity {
 
-    private _id: UuidValueObject;
-    private subject: string;
-    private content: string;
-    private sender: string;
-    private reciver: string;
+    public _id: UuidValueObject;
+    public subject: string;
+    public content: string;
+    public sender: string;
+    public reciver: string;
 
     constructor(initObject: EmailJsonDocument){
         super();
@@ -17,6 +17,10 @@ export class Emails extends Entity {
         this.content = initObject.content;
         this.sender = initObject.sender;
         this.reciver = initObject.reciver;
+    }
+
+    public static registeredEmailContent(): string {
+        return ``;
     }
 
     public toPrimitives(): EmailJsonDocument{

@@ -6,18 +6,18 @@ import { DomainEventSubscriber } from 'contexts/shared/domain/DomainEvents/Domai
 
 export class EventEmitterBus  {
     private channel: Channel;
-    constructor(subscribers: Array<DomainEventSubscriber<DomainEvent>>,channel: Channel) {
+    constructor(subscribers: Array<DomainEventSubscriber>,channel: Channel) {
         this.channel = channel
         this.registerSubscribers(subscribers);
     }    
 
-    public registerSubscribers(subscribers?: DomainEventSubscriber<DomainEvent>[]) {
+    public registerSubscribers(subscribers?: DomainEventSubscriber[]) {
         subscribers?.map(subscriber => {
             this.registerSubscriber(subscriber);
         });
     }
 
-    private registerSubscriber(subscriber: DomainEventSubscriber<DomainEvent>) {
+    private registerSubscriber(subscriber: DomainEventSubscriber) {
         subscriber.subscribedTo().map(event => {
             this.channel.consume(event.EVENT_NAME, (msg) => {
                 subscriber.on(event.fromPrimitives(JSON.parse(msg?.content.toString() as string)));

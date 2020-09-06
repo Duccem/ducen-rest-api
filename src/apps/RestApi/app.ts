@@ -1,5 +1,6 @@
 ////ARCHIVO DE CONFIGURACION DEL SERVIDOR
 //Requerimos los modulos necesarios para la app
+//Libraries
 import express, { Application, Router } from "express";
 //import path from "path";
 import cors from "cors";
@@ -7,14 +8,17 @@ import ducentrace from "ducentrace";
 //import swaggerUI from "swagger-ui-express";
 import cookieParser from "cookie-parser";
 
+//Own context app imports
 import { registerRoutes } from "./routes/router";
+import { registerObservers } from "./observers/observer";
+import { port, database, messageQ } from "./config/keys";
+//import { swaggerDocument } from "./docs";
+
+//Shared context domain implematations
+import { Logger } from "contexts/shared/infraestructure/Logger";
 import { MongoDBRepoitory } from "contexts/shared/infraestructure/Repositories/MongoDBRepository/MongoDBRepository";
 import { RabbitMQEventBus } from "contexts/shared/infraestructure/EventBus/RabbitMQEventBus";
-
-import { Logger } from "../../contexts/shared/infraestructure/Logger";
-import { port, database, messageQ } from "./config/keys";
-import { errorHandler, RouteNotFound } from "../../contexts/shared/domain/Errors";
-//import { swaggerDocument } from "./docs";
+import { errorHandler, RouteNotFound } from "contexts/shared/domain/Errors";
 
 /**
  * Class of the principal application of the server
@@ -65,16 +69,18 @@ export class App {
 	}
 
 	private routes() {
-		RabbitMQEventBus.createConnectionChannel(messageQ).then(({connection, channel}) =>{
-			const mongoRepo = new MongoDBRepoitory(database);
-			const rabbitBus = new RabbitMQEventBus([], connection, channel)
-			const router = Router();
-			registerRoutes(router, mongoRepo, rabbitBus);
-		})
+		RabbitMQEventBus.createConnectionChannel(messageQ)
+			.then(({connection, channel}) =>{
+				const mongoRepo = new MongoDBRepoitory(database);
+				const rabbitBus = new RabbitMQEventBus([], connection, channel)
+				const router = Router();
+				registerRoutes(router, mongoRepo, rabbitBus);
+				registerObservers(mongoRepo, rabbitBus);
+			});
 	}
 
 	private errors() {
-		this.app.use("*", (req, res, next) => {
+		this.app.use("*", (_req, _res, next) => {
 			next(new RouteNotFound());
 		});
 		this.app.use(errorHandler);

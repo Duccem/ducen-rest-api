@@ -11,5 +11,11 @@ export const database = {
 export const messageQ = {
 	host: process.env.MESSAGE_Q_HOST
 }
+
+export const email = {
+	email: process.env.EMAIL,
+	password: process.env.EMAIL_PASSORD,
+	port: process.env.EMAIL_PORT
+}
 export const tokenKey = process.env.TOKEN_KEY;
 export const port = process.env.PORT;
