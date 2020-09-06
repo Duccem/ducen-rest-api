@@ -27,6 +27,6 @@ export class EventEmitterBus  {
     }
 
     public publish(events: DomainEvent[]): void {
-        events.map(event => this.channel.sendToQueue(event.eventName, new Buffer(JSON.stringify(event.toPrimitive()))));
+        events.map(event => this.channel.sendToQueue(event.eventName,  Buffer.from(JSON.stringify(event.toPrimitive()))));
     }
 }

@@ -9,12 +9,13 @@ export class NodeMailerSender implements Sender {
     private transporter: Transporter
     
     constructor(mailerData: any){
-        this.sender = mailerData.mail;
+        this.sender = mailerData.email;
         this.password = mailerData.password;
         this.port = mailerData.port;
         this.transporter = nodemailer.createTransport({
-            service: 'Gmail',
+            service: 'gmail',
             port: this.port,
+            host: 'smtp.gmail.com',
             secure: false,
             auth: {
                 user: this.sender,

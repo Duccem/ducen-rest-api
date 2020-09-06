@@ -9,5 +9,5 @@ const BASE_ROUTE = 'users';
 export const register = (router:Router, repo: Repository, bus: EventBus) =>{
     const controller = new UserController(repo, bus);
 
-    router.post(`${BASE_ROUTE}/signup/`, (req: Request, res: Response, next: NextFunction) => controller.signup(req,res,next));
+    router.post('/users/signup', (req: Request, res: Response, next: NextFunction) => controller.signup(req,res,next));
 }

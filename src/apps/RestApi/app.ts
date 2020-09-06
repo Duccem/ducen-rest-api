@@ -79,15 +79,16 @@ export class App {
 				const router = Router();
 				registerRoutes(router, mongoRepo, rabbitBus);
 				registerObservers(mongoRepo, rabbitBus);
+				this.app.use("/",router);
 			})
 			.catch(err => console.log(err));
 	}
 
 	private errors() {
-		this.app.use("*", (_req, _res, next) => {
-			next(new RouteNotFound());
-		});
-		this.app.use(errorHandler);
+		// this.app.use("*", (_req, _res, next) => {
+		// 	next(new RouteNotFound());
+		// });
+		// this.app.use(errorHandler);
 	}
 
 	/**

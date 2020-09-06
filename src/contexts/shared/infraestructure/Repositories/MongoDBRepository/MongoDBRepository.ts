@@ -65,7 +65,7 @@ export class MongoDBRepoitory implements Repository {
     }
 
     public async insert(model: string, data:any): Promise<any>{
-        let result = await this.getConnection(model).insert(data);
+        let result = await this.getConnection(model).insertOne(data);
         return result;
     }
 
