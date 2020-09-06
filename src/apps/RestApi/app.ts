@@ -72,13 +72,15 @@ export class App {
 
 	private routes() {
 		RabbitMQEventBus.createConnectionChannel(messageQ)
-			.then(({connection, channel}) =>{
+			.then(async ({connection, channel}) =>{
 				const mongoRepo = new MongoDBRepoitory(database, this.logger);
+				await mongoRepo.setConnection();
 				const rabbitBus = new RabbitMQEventBus([], connection, channel)
 				const router = Router();
 				registerRoutes(router, mongoRepo, rabbitBus);
 				registerObservers(mongoRepo, rabbitBus);
-			});
+			})
+			.catch(err => console.log(err));
 	}
 
 	private errors() {

@@ -34,9 +34,12 @@ export class MongoDBRepoitory implements Repository {
     public async setConnection(database?: string): Promise<any> {
         if(this.connection) return this.connection;
 		try {
-			this.connection = await MongoClient.connect(this.database.host)
+			this.connection = await MongoClient.connect(`${this.database.host}/${this.database.database}`, {
+                useUnifiedTopology:true,
+            })
 			this.logger.log(`connected to ${this.database.database}`, { type: "database", color: "system" });
 		} catch (error) {
+            console.log(error);
 			throw new GeneralError("Error on database connection");
         }
 		return this.connection;

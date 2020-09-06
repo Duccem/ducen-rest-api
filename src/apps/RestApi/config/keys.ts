@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const database = {
-	name: process.env.DATABASE_NAME || "",
+	database: process.env.DATABASE_NAME || "",
 	user: process.env.DATABASE_USER || "",
 	password: process.env.DATABASE_PASSWORD || "",
 	host: process.env.DATABASE_HOST || "",
