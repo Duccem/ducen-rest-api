@@ -1,24 +1,24 @@
 ////ARCHIVO DE CONFIGURACION DEL SERVIDOR
 //Requerimos los modulos necesarios para la app
 //Libraries
-import express, { Application, Router } from "express";
+import express, { Application, Router } from 'express';
 //import path from "path";
-import cors from "cors";
-import ducentrace from "ducentrace";
+import cors from 'cors';
+import ducentrace from 'ducentrace';
 //import swaggerUI from "swagger-ui-express";
-import cookieParser from "cookie-parser";
+import cookieParser from 'cookie-parser';
 
 //Own context app imports
-import { registerRoutes } from "./routes/router";
-import { registerObservers } from "./observers/observer";
-import { port, database, messageQ } from "./config/keys";
+import { registerRoutes } from './routes/router';
+import { registerObservers } from './observers/observer';
+import { port, database, messageQ } from './config/keys';
 //import { swaggerDocument } from "./docs";
 
 //Shared context domain implematations
-import { Logger } from "../../contexts/shared/infraestructure/Logger";
-import { MongoDBRepoitory } from "../../contexts/shared/infraestructure/Repositories/MongoDBRepository/MongoDBRepository";
-import { RabbitMQEventBus } from "../../contexts/shared/infraestructure/EventBus/RabbitMQEventBus";
-import { errorHandler, RouteNotFound } from "../../contexts/shared/domain/Errors";
+import { Logger } from '../../contexts/shared/infraestructure/Logger';
+import { MongoDBRepoitory } from '../../contexts/shared/infraestructure/Repositories/MongoDBRepository/MongoDBRepository';
+import { RabbitMQEventBus } from '../../contexts/shared/infraestructure/EventBus/RabbitMQEventBus/RabbitMQEventBus';
+import { errorHandler, RouteNotFound } from '../../contexts/shared/domain/Errors';
 
 /**
  * Class of the principal application of the server
@@ -38,7 +38,7 @@ export class App {
 	 */
 	constructor(private port?: number | string) {
 		this.app = express();
-		this.logger = new Logger()
+		this.logger = new Logger();
 		this.settings();
 		this.middlewares();
 		this.routes();
@@ -46,11 +46,11 @@ export class App {
 	}
 
 	private settings() {
-		this.app.set("port", this.port || process.argv[2] || port || 80);
+		this.app.set('port', this.port || process.argv[2] || port || 80);
 	}
 
 	private middlewares() {
-		this.app.use(cors({ exposedHeaders: "Authorization" }));
+		this.app.use(cors({ exposedHeaders: 'Authorization' }));
 		this.app.use(cookieParser());
 		this.app.use(express.json());
 		this.app.use(express.urlencoded({ extended: false }));
@@ -72,16 +72,16 @@ export class App {
 
 	private routes() {
 		RabbitMQEventBus.createConnectionChannel(messageQ)
-			.then(async ({connection, channel}) =>{
+			.then(async ({ connection, channel }) => {
 				const mongoRepo = new MongoDBRepoitory(database, this.logger);
 				await mongoRepo.setConnection();
-				const rabbitBus = new RabbitMQEventBus([], connection, channel)
+				const rabbitBus = new RabbitMQEventBus([], connection, channel);
 				const router = Router();
 				registerRoutes(router, mongoRepo, rabbitBus);
 				registerObservers(mongoRepo, rabbitBus);
-				this.app.use("/",router);
+				this.app.use('/', router);
 			})
-			.catch(err => console.log(err));
+			.catch((err) => console.log(err));
 	}
 
 	private errors() {
@@ -95,8 +95,8 @@ export class App {
 	 * Function to start the server
 	 */
 	public listen() {
-		let server = this.app.listen(this.app.get("port"), "127.0.0.1");
-		server.on("listening", () => {
+		let server = this.app.listen(this.app.get('port'), '127.0.0.1');
+		server.on('listening', () => {
 			let address: any = server.address();
 		});
 	}
