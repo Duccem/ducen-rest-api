@@ -3,6 +3,7 @@ import { DomainEventSubscriber } from 'contexts/shared/domain/DomainEvents/Domai
 import { EventBus } from 'contexts/shared/domain/DomainEvents/EventBus';
 import { RabbitMQEventEmitterBus } from './RabbitMQEventEmitterBus';
 import { connect, Channel, Connection } from 'amqplib';
+import { Logger } from '../../Logger';
 
 export class RabbitMQEventBus implements EventBus {
 	private bus: RabbitMQEventEmitterBus;
@@ -12,10 +13,10 @@ export class RabbitMQEventBus implements EventBus {
 		this.connection = connection;
 	}
 
-	public static async createConnectionChannel(config: any): Promise<any> {
+	public static async createConnectionChannel(config: any, logger: Logger): Promise<any> {
 		let connection = await connect(config.host);
 		let channel = await connection.createChannel();
-		console.log('Connected to rabbit');
+		logger.log(`connected to the host ${config.host}`, { type: 'message', color: 'system' });
 		return { connection, channel };
 	}
 

@@ -6,7 +6,6 @@ import { NodeMailerSender } from '../../../contexts/ClientAttention/Emails/infra
 import { email } from '../config/keys';
 
 export function register(repo: Repository, bus: EventBus) {
-	console.log(email);
 	const sender = new NodeMailerSender(email);
 	const emailEventSubscriber = new EmailEventsSubscriber(repo, bus, sender);
 	return emailEventSubscriber;

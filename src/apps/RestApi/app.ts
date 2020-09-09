@@ -12,12 +12,11 @@ import cookieParser from 'cookie-parser';
 import { registerRoutes } from './routes/router';
 import { registerObservers } from './observers/observer';
 import { port, database, messageQ } from './config/keys';
+import { connect } from './config/connections';
 //import { swaggerDocument } from "./docs";
 
 //Shared context domain implematations
 import { Logger } from '../../contexts/shared/infraestructure/Logger';
-import { MongoDBRepoitory } from '../../contexts/shared/infraestructure/Repositories/MongoDBRepository/MongoDBRepository';
-import { RabbitMQEventBus } from '../../contexts/shared/infraestructure/EventBus/RabbitMQEventBus/RabbitMQEventBus';
 import { errorHandler, RouteNotFound } from '../../contexts/shared/domain/Errors';
 
 /**
@@ -71,24 +70,21 @@ export class App {
 	}
 
 	private routes() {
-		RabbitMQEventBus.createConnectionChannel(messageQ)
-			.then(async ({ connection, channel }) => {
-				const mongoRepo = new MongoDBRepoitory(database, this.logger);
-				await mongoRepo.setConnection();
-				const rabbitBus = new RabbitMQEventBus([], connection, channel);
+		connect(this.logger)(database, messageQ)
+			.then(({ repository, eventBus }) => {
 				const router = Router();
-				registerRoutes(router, mongoRepo, rabbitBus);
-				registerObservers(mongoRepo, rabbitBus);
+				registerRoutes(router, repository, eventBus);
+				registerObservers(repository, eventBus);
 				this.app.use('/', router);
+				this.app.use('*', (_req, _res, next) => {
+					next(new RouteNotFound());
+				});
 			})
-			.catch((err) => console.log(err));
+			.catch((error) => this.logger.log(error, { color: 'error', type: 'error' }));
 	}
 
 	private errors() {
-		// this.app.use("*", (_req, _res, next) => {
-		// 	next(new RouteNotFound());
-		// });
-		// this.app.use(errorHandler);
+		this.app.use(errorHandler);
 	}
 
 	/**
