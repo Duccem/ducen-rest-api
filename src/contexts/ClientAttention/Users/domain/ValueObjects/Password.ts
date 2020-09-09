@@ -1,6 +1,6 @@
-import { InvalidArgument } from "../../../../shared/domain/Errors";
-import { StringValueObject } from "../../../../shared/domain/ValueObjects/StringValueObject";
-import { Authentication } from "../../../../shared/infraestructure/Authentication";
+import { InvalidArgument } from '../../../../shared/domain/Errors';
+import { StringValueObject } from '../../../../shared/domain/ValueObjects/StringValueObject';
+import { Encript } from '../../../../shared/infraestructure/Encript';
 
 /**
  * Password field that ensure that this value is correct and is encripted
@@ -27,22 +27,22 @@ export class Password extends StringValueObject {
 			else if (this.value.charCodeAt(index) >= 48 && this.value.charCodeAt(index) >= 57) number = true;
 			else weird = true;
 		}
-		if (!size && !upper && !lower && !number && !weird) throw new InvalidArgument("Formato de la contraseña incorrecta");
+		if (!size && !upper && !lower && !number && !weird) throw new InvalidArgument('Formato de la contraseña incorrecta');
 	}
 
 	/**
 	 * Method that encript the password with a secure algorithim
 	 */
-	public async encript(): Promise<void> {
-		this.value = await Authentication.passwordEncript(this.value);
+	public encript(): void {
+		this.value = Encript.passwordEncript(this.value);
 	}
 
 	/**
 	 * Compare the password with a string given
 	 * @param given_password the string to compare
 	 */
-	public async compare(given_password: string): Promise<boolean> {
-		let valid = await Authentication.passwordCompare(given_password, this.value);
+	public compare(given_password: string): boolean {
+		let valid = Encript.passwordCompare(given_password, this.value);
 		return valid;
 	}
 }
