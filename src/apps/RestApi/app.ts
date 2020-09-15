@@ -45,7 +45,7 @@ export class App {
 	}
 
 	private settings() {
-		this.app.set('port', this.port || process.argv[2] || port || 80);
+		this.app.set('port', this.port || process.argv[2] || port || 3000);
 	}
 
 	private middlewares() {
