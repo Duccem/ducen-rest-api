@@ -35,6 +35,7 @@ export class MongoDBRepoitory implements Repository {
 		try {
 			this.connection = await MongoClient.connect(`${this.database.host}/${this.database.database}`, {
 				useUnifiedTopology: true,
+				useNewUrlParser: true,
 			});
 			this.logger.log(`connected to ${this.database.database}`, { type: 'database', color: 'system' });
 		} catch (error) {
