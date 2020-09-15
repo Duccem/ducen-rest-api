@@ -77,15 +77,15 @@ export class App {
 				registerObservers(repository, eventBus);
 				this.app.use('/', router);
 				this.app.use('*', (_req, _res, next) => {
+					console.log('hey');
 					next(new RouteNotFound());
 				});
+				this.app.use(errorHandler);
 			})
 			.catch((error) => this.logger.log(error, { color: 'error', type: 'error' }));
 	}
 
-	private errors() {
-		this.app.use(errorHandler);
-	}
+	private errors() {}
 
 	/**
 	 * Function to start the server

@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 
 /**
  * General error handle class
@@ -12,7 +12,7 @@ export class GeneralError extends Error {
 	 */
 	constructor(log?: string) {
 		super();
-		this.log = log || "";
+		this.log = log || '';
 	}
 	public getCode(): number {
 		if (this instanceof BadRequest) return 400;
@@ -23,16 +23,16 @@ export class GeneralError extends Error {
 		return 500;
 	}
 	public getMessage(): string {
-		if (this instanceof InvalidID) return this.log || "The given ID have the incorrect format";
-		if (this instanceof InvalidArgument) return this.log || "Argument with bad format or doesn`t exists";
-		if (this instanceof BadRequest) return this.log || "Bad Request";
-		if (this instanceof Unauthorized) return this.log || "Credentials are invalids";
-		if (this instanceof PaymentRequired) return this.log || "Payment required to this route";
-		if (this instanceof Forbidden) return this.log || "You are not allowed to use this route";
-		if (this instanceof RouteNotFound) return this.log || "The requested route doesn`t exists";
-		if (this instanceof ElementNotFound) return this.log || "The entity requested doesn`t exists";
-		if (this instanceof NotFound) return this.log || "Not Found";
-		return "Internal Server Error";
+		if (this instanceof InvalidID) return this.log || 'The given ID have the incorrect format';
+		if (this instanceof InvalidArgument) return this.log || 'Argument with bad format or doesn`t exists';
+		if (this instanceof BadRequest) return this.log || 'Bad Request';
+		if (this instanceof Unauthorized) return this.log || 'Credentials are invalids';
+		if (this instanceof PaymentRequired) return this.log || 'Payment required to this route';
+		if (this instanceof Forbidden) return this.log || 'You are not allowed to use this route';
+		if (this instanceof RouteNotFound) return this.log || 'The requested route doesn`t exists';
+		if (this instanceof ElementNotFound) return this.log || 'The entity requested doesn`t exists';
+		if (this instanceof NotFound) return this.log || 'Not Found';
+		return 'Internal Server Error';
 	}
 }
 
@@ -45,14 +45,14 @@ export class GeneralError extends Error {
  */
 export function errorHandler(err: any, req: Request, res: Response, next: NextFunction): Response {
 	if (err instanceof GeneralError) {
-		if (err.log) req.logger.log(err.log, { type: "error", color: "error" });
+		if (err.log) req.logger.log(err.log, { type: 'error', color: 'error' });
 		return res.status(err.getCode()).json({
 			message: err.getMessage(),
 		});
 	}
-	req.logger.log(err.message, { type: "error", color: "error" });
+	req.logger.log(err.message, { type: 'error', color: 'error' });
 	return res.status(500).json({
-		message: "Internal Server Error",
+		message: 'Internal Server Error',
 	});
 }
 
