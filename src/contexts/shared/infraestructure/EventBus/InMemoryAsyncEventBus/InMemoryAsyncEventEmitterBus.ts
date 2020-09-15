@@ -10,7 +10,8 @@ export class InMemoryAsyncEventEmitterBus {
 	}
 
 	public registerSubscribers(subscribers?: DomainEventSubscriber[]) {
-		subscribers?.map((subscriber) => {
+		if (!subscribers) return;
+		subscribers.map((subscriber) => {
 			this.registerSubscriber(subscriber);
 		});
 	}
