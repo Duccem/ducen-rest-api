@@ -41,7 +41,6 @@ export class App {
 		this.settings();
 		this.middlewares();
 		this.routes();
-		this.errors();
 	}
 
 	private settings() {
@@ -84,8 +83,6 @@ export class App {
 			.catch((error) => this.logger.log(error, { color: 'error', type: 'error' }));
 	}
 
-	private errors() {}
-
 	/**
 	 * Function to start the server
 	 */
@@ -93,6 +90,7 @@ export class App {
 		let server = this.app.listen(this.app.get('port'), '0.0.0.0');
 		server.on('listening', () => {
 			let address: any = server.address();
+			this.logger.log(`Listening on http://${address.address}:${address.port}`, { color: 'warning', type: 'server' });
 		});
 	}
 }
