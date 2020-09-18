@@ -45,7 +45,7 @@ export class App {
 	}
 
 	private settings() {
-		this.app.set('port', this.port || process.argv[2] || process.env.PORT || 3000);
+		this.app.set('port', this.port || process.argv[2] || process.env.PORT || 5000);
 	}
 
 	private middlewares() {
@@ -77,7 +77,6 @@ export class App {
 				registerObservers(repository, eventBus);
 				this.app.use('/', router);
 				this.app.use('*', (_req, _res, next) => {
-					console.log('hey');
 					next(new RouteNotFound());
 				});
 				this.app.use(errorHandler);
@@ -91,7 +90,7 @@ export class App {
 	 * Function to start the server
 	 */
 	public listen() {
-		let server = this.app.listen(this.app.get('port'), '127.0.0.1');
+		let server = this.app.listen(this.app.get('port'), '0.0.0.0');
 		server.on('listening', () => {
 			let address: any = server.address();
 		});
