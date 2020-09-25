@@ -58,4 +58,6 @@ export class UserCommands {
 
 		return this.auth.formatResponse(user.toPrimitives());
 	}
+
+	public async userPayment(data: any) {}
 }
