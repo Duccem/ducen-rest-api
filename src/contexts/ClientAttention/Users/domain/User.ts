@@ -1,11 +1,11 @@
-import { Password } from "./ValueObjects/Password";
-import { UserJsonDocument } from "./Types/UserJsonDocument";
-import { UuidValueObject } from "../../../shared/domain/ValueObjects/UuidValueObject";
-import { UserBirthDate } from "./ValueObjects/UserBirthDate";
-import { Email } from "./ValueObjects/Email";
-import { Entity } from "../../../shared/domain/Entity";
+import { Password } from './ValueObjects/Password';
+import { UserJsonDocument } from './Types/UserJsonDocument';
+import { UuidValueObject } from '../../../shared/domain/ValueObjects/UuidValueObject';
+import { UserBirthDate } from './ValueObjects/UserBirthDate';
+import { Email } from './ValueObjects/Email';
+import { Entity } from '../../../shared/domain/Entity';
 //Principal class of Users
-export class User  extends Entity{
+export class User extends Entity {
 	public _id: UuidValueObject;
 	public firstname: string;
 	public lastname: string;
@@ -20,10 +20,10 @@ export class User  extends Entity{
 	public money: number;
 	public travels: number;
 	public daily_travels: number;
-	public daily_spend: number; 
+	public daily_spend: number;
 
 	constructor(initObject: UserJsonDocument) {
-		super()
+		super();
 		this._id = initObject._id ? new UuidValueObject(initObject._id) : UuidValueObject.random();
 		this.firstname = initObject.firstname;
 		this.lastname = initObject.lastname;
@@ -40,6 +40,23 @@ export class User  extends Entity{
 		this.daily_spend = initObject.daily_spend;
 	}
 
+	/**
+	 * * Return a complete data description of the user
+	 */
+	public getDescription(): string {
+		return 'The user' + this.firstname + ' ' + this.lastname + ' Also know as: ' + this.username;
+	}
+
+	/**
+	 * * Return the new daily spend when a spend is made
+	 * @param cost cost or cant of the spend
+	 */
+	public spend(cost: number): number {
+		this.money -= cost;
+		let newDailySpend = (this.daily_spend * this.daily_travels + cost) / this.daily_travels;
+		this.daily_spend = newDailySpend;
+		return newDailySpend;
+	}
 
 	public toPrimitives(): UserJsonDocument {
 		return {
@@ -56,7 +73,7 @@ export class User  extends Entity{
 			money: this.money,
 			travels: this.travels,
 			daily_travels: this.daily_travels,
-			daily_spend: this.daily_spend
+			daily_spend: this.daily_spend,
 		};
 	}
 }
