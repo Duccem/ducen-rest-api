@@ -48,7 +48,7 @@ export class User extends Entity {
 	}
 
 	/**
-	 * * Return the new daily spend when a spend is made
+	 * * Return the new money amount when a spend is made, also recalculate the new daily spend
 	 * @param cost cost or cant of the spend
 	 */
 	public spend(cost: number): number {
@@ -56,6 +56,15 @@ export class User extends Entity {
 		let newDailySpend = (this.daily_spend * this.daily_travels + cost) / this.daily_travels;
 		this.daily_spend = newDailySpend;
 		return newDailySpend;
+	}
+
+	/**
+	 * * Return the new money amount when a pay is made to the bag of the user
+	 * @param pay
+	 */
+	public payment(pay: number): number {
+		this.money += pay;
+		return this.money;
 	}
 
 	public toPrimitives(): UserJsonDocument {
