@@ -13,6 +13,16 @@ export class UserController {
 	public async signup(req: Request, res: Response, next: NextFunction) {
 		try {
 			const response = await this.userCommands.signup(req.body);
+			return res.status(201).json(response);
+		} catch (error) {
+			next(error);
+		}
+	}
+
+	public async login(req: Request, res: Response, next: NextFunction) {
+		try {
+			const { user, password } = req.body;
+			const response = await this.userCommands.login(user, password);
 			return res.status(200).json(response);
 		} catch (error) {
 			next(error);

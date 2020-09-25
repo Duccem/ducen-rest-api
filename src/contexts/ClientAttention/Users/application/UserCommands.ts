@@ -25,7 +25,7 @@ export class UserCommands {
 	 * @param actor The data of the new user
 	 */
 	public async signup(actor: UserJsonDocument): Promise<AuthJsonDocument> {
-		let count = await this.repository.count('users', { where: { username: actor.username } });
+		let count = await this.repository.count('user', { where: { username: actor.username } });
 
 		if (count > 0) throw new BadRequest('The email is already in use');
 		const user = new User(actor);
@@ -45,12 +45,13 @@ export class UserCommands {
 		const users: any[] = await this.repository.list('user', {
 			where: {
 				or: {
-					name: identifier,
+					username: identifier,
 					email: identifier,
 				},
 			},
 		});
 		if (!users[0]) throw new Unauthorized('User not found');
+		console.log(users[0]);
 		const user = new User(users[0]);
 		let valid = user.password.compare(password);
 		if (!valid) throw new Unauthorized('Oops! incorrect password');
