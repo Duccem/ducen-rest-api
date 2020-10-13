@@ -1,3 +1,4 @@
+export default `
 type User {
 	_id: ID!
 	firstname: String
@@ -25,10 +26,4 @@ type Query {
 	signin(indentifactor: String!, password: String!): AuthToken!
 }
 
-type Mutation {
-
-}
-
-type Subscription {
-
-}
+`;
