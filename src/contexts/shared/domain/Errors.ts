@@ -43,7 +43,7 @@ export class GeneralError extends Error {
  * @param res Response object
  * @param next Next function
  */
-export function errorHandler(err: any, req: Request, res: any, next: NextFunction): Response {
+export function errorHandler(err: any, req: Request, res: Response, next: NextFunction): Response {
 	if (err instanceof GeneralError) {
 		if (err.log) req.logger.log(err.log, { type: 'error', color: 'error' });
 		return res.status(err.getCode()).json({
