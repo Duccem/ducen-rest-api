@@ -1,37 +1,51 @@
 import { Request, Response, NextFunction } from 'express';
+import { Logger } from '../infraestructure/Logger';
+import { pick, omit } from 'lodash'
+
+
+export type ErrorExtension = {
+	code: any;
+	exception: any;
+}
 
 /**
  * General error handle class
  */
 export class GeneralError extends Error {
-	public log: string;
+	public message: string;
+	public extensions: ErrorExtension;
 
 	/**
 	 * Constructor
-	 * @param log The message log to console
+	 * @param message The message message to console
+	 * @param code The code of the error
 	 */
-	constructor(log?: string) {
+	constructor(message?: string, code?:number, exception?: any) {
 		super();
-		this.log = log || '';
+		this.message = message || '';
+		this.extensions = {
+			code: code || 0,
+			exception: exception || null
+		}
 	}
 	public getCode(): number {
-		if (this instanceof BadRequest) return 400;
-		if (this instanceof Unauthorized) return 401;
-		if (this instanceof PaymentRequired) return 402;
-		if (this instanceof Forbidden) return 403;
-		if (this instanceof NotFound) return 404;
+		if (this instanceof BadRequest) return this.extensions.code || 400;
+		if (this instanceof Unauthorized) return this.extensions.code || 401;
+		if (this instanceof PaymentRequired) return this.extensions.code || 402;
+		if (this instanceof Forbidden) return this.extensions.code || 403;
+		if (this instanceof NotFound) return this.extensions.code || 404;
 		return 500;
 	}
 	public getMessage(): string {
-		if (this instanceof InvalidID) return this.log || 'The given ID have the incorrect format';
-		if (this instanceof InvalidArgument) return this.log || 'Argument with bad format or doesn`t exists';
-		if (this instanceof BadRequest) return this.log || 'Bad Request';
-		if (this instanceof Unauthorized) return this.log || 'Credentials are invalids';
-		if (this instanceof PaymentRequired) return this.log || 'Payment required to this route';
-		if (this instanceof Forbidden) return this.log || 'You are not allowed to use this route';
-		if (this instanceof RouteNotFound) return this.log || 'The requested route doesn`t exists';
-		if (this instanceof ElementNotFound) return this.log || 'The entity requested doesn`t exists';
-		if (this instanceof NotFound) return this.log || 'Not Found';
+		if (this instanceof InvalidID) return this.message || 'The given ID have the incorrect format';
+		if (this instanceof InvalidArgument) return this.message || 'Argument with bad format or doesn`t exists';
+		if (this instanceof BadRequest) return this.message || 'Bad Request';
+		if (this instanceof Unauthorized) return this.message || 'Credentials are invalids';
+		if (this instanceof PaymentRequired) return this.message || 'Payment required to this route';
+		if (this instanceof Forbidden) return this.message || 'You are not allowed to use this route';
+		if (this instanceof RouteNotFound) return this.message || 'The requested route doesn`t exists';
+		if (this instanceof ElementNotFound) return this.message || 'The entity requested doesn`t exists';
+		if (this instanceof NotFound) return this.message || 'Not Found';
 		return 'Internal Server Error';
 	}
 }
@@ -43,9 +57,9 @@ export class GeneralError extends Error {
  * @param res Response object
  * @param next Next function
  */
-export function errorHandler(err: any, req: Request, res: Response, next: NextFunction): Response {
+export function expressErrorHandler(err: any, req: Request, res: Response, next: NextFunction): Response {
 	if (err instanceof GeneralError) {
-		if (err.log) req.logger.log(err.log, { type: 'error', color: 'error' });
+		if (err.message) req.logger.log(err.getMessage(), { type: 'error', color: 'error' });
 		return res.status(err.getCode()).json({
 			message: err.getMessage(),
 		});
@@ -54,6 +68,19 @@ export function errorHandler(err: any, req: Request, res: Response, next: NextFu
 	return res.status(500).json({
 		message: 'Internal Server Error',
 	});
+}
+
+export function graphQLErrorHandler(logger: Logger) {
+	return (error:any) => {
+		error = error.originalError;
+		if (error instanceof GeneralError) {
+			if (error.message) logger.log(`${error.getCode()} ${error.getMessage()} ${error.extensions.exception}`, { type: 'error', color: 'error' });
+			error = omit(error, 'extensions.exception')
+			return error
+		}
+		logger.log(`500 ${error.message} ${error.extensions.exception}`, { type: 'error', color: 'error' });
+		return omit(new GeneralError('Internal Server Error', 500), 'extensions.exception');
+	}
 }
 
 /**

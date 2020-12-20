@@ -13,6 +13,7 @@ import resolvers from './resolvers/index';
 
 //Shared context domain implematations
 import { Logger } from '../../contexts/shared/infraestructure/Logger';
+import { graphQLErrorHandler } from '../../contexts/shared/domain/Errors';
 
 /**
  * Class of the principal application of the server
@@ -59,6 +60,7 @@ export class App {
 			},
 			playground: true,
 			introspection: true,
+			formatError: graphQLErrorHandler(this.logger)
 		});
 		server.applyMiddleware({ app: this.app, path: '/graphql' });
 	}

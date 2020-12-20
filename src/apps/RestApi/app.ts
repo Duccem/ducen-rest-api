@@ -17,7 +17,7 @@ import { connect } from './config/connections';
 
 //Shared context domain implematations
 import { Logger } from '../../contexts/shared/infraestructure/Logger';
-import { errorHandler, RouteNotFound } from '../../contexts/shared/domain/Errors';
+import { expressErrorHandler, RouteNotFound } from '../../contexts/shared/domain/Errors';
 
 /**
  * Class of the principal application of the server
@@ -78,7 +78,7 @@ export class App {
 				this.app.use('*', (_req, _res, next) => {
 					next(new RouteNotFound());
 				});
-				this.app.use(errorHandler);
+				this.app.use(expressErrorHandler);
 			})
 			.catch((error) => this.logger.log(error, { color: 'error', type: 'error' }));
 	}

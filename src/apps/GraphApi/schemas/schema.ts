@@ -19,7 +19,7 @@ type User {
 
 type AuthToken {
 	token: String!
-	user: User!
+	user: String
 }
 type Query {
 	users: [User!]!
