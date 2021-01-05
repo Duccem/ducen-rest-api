@@ -7,9 +7,15 @@ import { Emails } from '../domain/Email';
 import { Sender } from '../domain/Sender';
 import { EmailJsonDocument } from '../domain/Types/EmailJsonDocument';
 import { EmailSendedDomainEvent } from '../domain/DomainEvents/EmailSendedDomainEvent';
+import { Inject, Service } from 'typedi';
 
-export class EmailSender {
-	constructor(private repoository: Repository, private bus: EventBus, private sender: Sender) {}
+@Service("EmailCreator")
+export class EmailCreator {
+	constructor(
+		@Inject("Repository") private repoository: Repository, 
+		@Inject("EventBus") private bus: EventBus, 
+		@Inject("EmailSender") private sender: Sender
+	) {}
 
 	public async sendRegisterEmail(data: any) {
 		let dataEmail: EmailJsonDocument = {

@@ -27,6 +27,6 @@ export abstract class DateValueObject{
 		if(!isValid) throw new InvalidArgument('The format of the date is not correct');
 	}
 	public toString() {
-		return this.value.toDateString();
+		return this.value.toISOString();
 	}
 }

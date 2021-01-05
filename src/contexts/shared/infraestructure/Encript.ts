@@ -18,7 +18,6 @@ export class Encript {
 	public static passwordCompare(password: string, hash: string): boolean {
 		try {
 			let valido = bcrypt.compareSync(password, hash);
-			console.log(valido);
 			return valido;
 		} catch (error) {
 			throw new GeneralError(`Al validar contraseña, Error: ${error}`);

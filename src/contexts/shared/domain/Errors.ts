@@ -74,6 +74,7 @@ export function graphQLErrorHandler(logger: Logger) {
 	return (error:any) => {
 		error = error.originalError;
 		if (error instanceof GeneralError) {
+			console.log(error)
 			if (error.message) logger.log(`${error.getCode()} ${error.getMessage()} ${error.extensions.exception}`, { type: 'error', color: 'error' });
 			error = omit(error, 'extensions.exception')
 			return error

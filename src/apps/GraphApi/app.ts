@@ -15,6 +15,8 @@ import { Logger } from '../../contexts/shared/infraestructure/Logger';
 import { graphQLErrorHandler } from '../../contexts/shared/domain/Errors';
 import { connect } from './config/connections';
 import { database } from './config/keys';
+import { setContainer } from './config/container';
+import { registerObservers } from './schema/observers/observer';
 
 /**
  * Class of the principal application of the server
@@ -71,7 +73,9 @@ export class App {
 
 	private async intialize(){
 		const { repository, eventBus } = await connect(this.logger)(database)
-		const schema = await makeSchema(repository, eventBus);
+		setContainer(repository, eventBus);
+		registerObservers();
+		const schema = await makeSchema();
 		return {repository, schema};
 	}
 

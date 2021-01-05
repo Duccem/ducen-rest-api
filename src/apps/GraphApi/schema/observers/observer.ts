@@ -1,19 +1,21 @@
+import { EventBus } from 'contexts/shared/domain/DomainEvents/EventBus';
 import glob from 'glob';
-import { EventBus } from '../../../../contexts/shared/domain/DomainEvents/EventBus';
-import { Repository } from '../../../../contexts/shared/domain/Repositories/Repository';
+import Container from 'typedi';
+
 import { DomainEventSubscriber } from '../../../../contexts/shared/domain/DomainEvents/DomainEventSubscriber';
 
 
 const subscribers = new Array<DomainEventSubscriber>();
 
-export function registerObservers(repo: Repository,bus: EventBus) {
+export function registerObservers() {
     const routes = glob.sync(__dirname + '/**/*.observe.*');
-    routes.map(route => register(route, repo, bus));
+    let bus = Container.get<EventBus>("EventBus");
+    routes.map(route => register(route));
     bus.addSubscribers(subscribers);
 }
 
-function register(routePath: string,repo: Repository, bus:EventBus) {
+function register(routePath: string) {
     const route = require(routePath);
-    const subscriber = route.register(repo, bus);
+    const subscriber = route.register();
     subscribers.push(subscriber);
 }

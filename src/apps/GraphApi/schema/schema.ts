@@ -1,20 +1,13 @@
 import "reflect-metadata";
 import { buildSchema } from 'type-graphql';
-import { Container } from 'typedi';
+import { Container } from "typedi";
 import path from 'path';
+import { GraphQLSchema } from "graphql";
 
 //resolvers 
 import { AccessResolver } from './resolvers/access.resolvers'
-import { Repository } from "../../../contexts/shared/domain/Repositories/Repository";
-import { EventBus } from "../../../contexts/shared/domain/DomainEvents/EventBus";
-import { JWTAuth } from '../../../contexts/ClientAttention/Users/infraestructure/JWTAuth'
-import { GraphQLSchema } from "graphql";
-import { tokenKey } from "../config/keys";
 
-export default async (repository: Repository, eventBus?: EventBus): Promise<GraphQLSchema> => {
-	Container.set("Repository", repository);
-	Container.set("EventBus", eventBus);
-	Container.set("Auth", new JWTAuth(tokenKey as string));
+export default async (): Promise<GraphQLSchema> => {
 	return  await buildSchema({
 		resolvers: [AccessResolver],
 		container: Container,

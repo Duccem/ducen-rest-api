@@ -11,7 +11,7 @@ import { Inject, Service } from 'typedi';
  * Uses cases of authentication of users, login, signup and log outh
  */
 
-@Service()
+@Service("UserService")
 export class UserCommands {
 	constructor(
 		@Inject("Repository") private readonly repository: Repository, 
@@ -49,12 +49,16 @@ export class UserCommands {
 			},
 		});
 		if (!users[0]) throw new Unauthorized('User not found');
-		console.log(users[0]);
 		const user = new User(users[0]);
 		let valid = user.password.compare(password);
+		
 		if (!valid) throw new Unauthorized('Oops! incorrect password');
 
 		return this.auth.formatResponse(user.toPrimitives());
+	}
+
+	public log(){
+		return "probando"
 	}
 
 	public async userPayment(data: any) {}
