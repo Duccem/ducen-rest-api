@@ -2,18 +2,19 @@
 //Requerimos los modulos necesarios para la app
 //Libraries
 import express, { Application } from 'express';
-import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import ducentrace from 'ducentrace';
 import cookieParser from 'cookie-parser';
 
 //Own imports
-import schema from './schemas/schema';
-import resolvers from './resolvers/index';
+import makeSchema from './schema/schema';
 
 //Shared context domain implematations
 import { Logger } from '../../contexts/shared/infraestructure/Logger';
 import { graphQLErrorHandler } from '../../contexts/shared/domain/Errors';
+import { connect } from './config/connections';
+import { database } from './config/keys';
 
 /**
  * Class of the principal application of the server
@@ -52,17 +53,26 @@ export class App {
 			req.logger = this.logger;
 			next();
 		});
-		const server = new ApolloServer({
-			typeDefs: gql(schema),
-			resolvers,
-			context: ({ req }) => {
-				return { req };
-			},
-			playground: true,
-			introspection: true,
-			formatError: graphQLErrorHandler(this.logger)
-		});
-		server.applyMiddleware({ app: this.app, path: '/graphql' });
+		this.intialize().then(({ repository, schema })=>{
+			const server = new ApolloServer({
+				schema,
+				context: ({ req }) => {
+					return { req };
+				},
+				playground: true,
+				introspection: true,
+				formatError: graphQLErrorHandler(this.logger)
+			});
+			server.applyMiddleware({ app: this.app, path: '/graphql' });
+		}).catch((error)=>{
+			console.log(error);
+		})
+	}
+
+	private async intialize(){
+		const { repository, eventBus } = await connect(this.logger)(database)
+		const schema = await makeSchema(repository, eventBus);
+		return {repository, schema};
 	}
 
 	/**

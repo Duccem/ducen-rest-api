@@ -12,12 +12,10 @@ export class JWTAuth implements Auth {
 	constructor(secret: string) {
 		this.secretKey = secret;
 	}
-	public formatResponse(user: UserJsonDocument): AuthJsonDocument {
+	public formatResponse(user: UserJsonDocument): UserJsonDocument {
 		let token = jwt.sign({ id: user._id }, this.secretKey, { expiresIn: 60 * 60 * 24 });
-		return {
-			token,
-			user,
-		};
+		user.token = token;
+		return user;
 	}
 
 	public verifyToken(token: string): AuthPayload {

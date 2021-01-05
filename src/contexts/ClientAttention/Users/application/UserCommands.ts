@@ -4,27 +4,25 @@ import { BadRequest, Unauthorized } from '../../../shared/domain/Errors';
 import { Repository } from '../../../shared/domain/Repositories/Repository';
 import { UserJsonDocument } from '../domain/Types/UserJsonDocument';
 import { EventBus } from '../../../shared/domain/DomainEvents/EventBus';
-import { AuthJsonDocument } from '../domain/Types/AuthJsonDocument';
 import { Auth } from '../domain/Auth';
+import { Inject, Service } from 'typedi';
 
 /**
  * Uses cases of authentication of users, login, signup and log outh
  */
+
+@Service()
 export class UserCommands {
-	private repository: Repository;
-	private eventBus: EventBus;
-	private auth: Auth;
-	constructor(repo: Repository, bus: EventBus, auth: Auth) {
-		this.repository = repo;
-		this.eventBus = bus;
-		this.auth = auth;
-	}
+	constructor(
+		@Inject("Repository") private readonly repository: Repository, 
+		@Inject("EventBus") private readonly eventBus: EventBus, 
+		@Inject("Auth") private readonly auth: Auth) {}
 
 	/**
 	 * Sign up function
 	 * @param actor The data of the new user
 	 */
-	public async signup(actor: UserJsonDocument): Promise<AuthJsonDocument> {
+	public async signup(actor: UserJsonDocument): Promise<UserJsonDocument> {
 		let count = await this.repository.count('user', { where: { username: actor.username } });
 
 		if (count > 0) throw new BadRequest('The email is already in use');
@@ -41,7 +39,7 @@ export class UserCommands {
 		return this.auth.formatResponse(user.toPrimitives());
 	}
 
-	public async login(identifier: string, password: string): Promise<AuthJsonDocument> {
+	public async login(identifier: string, password: string): Promise<UserJsonDocument> {
 		const users: any[] = await this.repository.list('user', {
 			where: {
 				or: {

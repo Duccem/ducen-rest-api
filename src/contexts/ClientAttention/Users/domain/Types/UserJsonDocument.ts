@@ -15,6 +15,7 @@ export type UserJsonDocument = JsonDocument & {
 	travels: number,
 	daily_travels: number,
 	daily_spend: number,
+	token?: string
 };
 
 
