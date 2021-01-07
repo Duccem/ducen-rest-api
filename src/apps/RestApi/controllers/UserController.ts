@@ -1,5 +1,5 @@
 import { Request, NextFunction, Response } from 'express';
-import { UserCommands } from '../../../contexts/ClientAttention/Users/application/UserCommands';
+import { UserCommands } from '../../../contexts/ClientAttention/Users/application/UserAccessService';
 import { Repository } from '../../../contexts/shared/domain/Repositories/Repository';
 import { EventBus } from '../../../contexts/shared/domain/DomainEvents/EventBus';
 import { JWTAuth } from '../../../contexts/ClientAttention/Users/infraestructure/JWTAuth';

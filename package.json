@@ -22,6 +22,7 @@
 	"author": "Aftim software",
 	"license": "ISC",
 	"dependencies": {
+		"@casl/ability": "^5.1.2",
 		"amqplib": "^0.6.0",
 		"apollo-server-express": "^2.18.2",
 		"axios": "^0.19.2",

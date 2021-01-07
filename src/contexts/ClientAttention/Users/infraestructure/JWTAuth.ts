@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { AuthJsonDocument } from '../domain/Types/AuthJsonDocument';
 import { UserJsonDocument } from '../domain/Types/UserJsonDocument';
-import { Auth } from '../domain/Auth';
+import { Auth } from '../domain/Interfaces/Auth';
 
 export type AuthPayload = {
 	id: string;

@@ -7,7 +7,6 @@ export class User {
 	@Field({nullable: true, description: 'Firstnames of the person'}) firstname?: string;
 	@Field({nullable: true, description: 'Lastnames and mother name of the person'}) lastname?: string;
 	@Field({nullable: true, description: 'User nickname to login and navigate'}) username?: string;
-	@Field({nullable: true, description: 'Security password'}) password?: string;
 	@Field({nullable: true, description: 'Contact email'}) email?: string;
 	@Field({nullable: true, description: 'Birthdate of the person'}) birthdate?: string;
 	@Field({nullable: true, description: 'Oriented sex of the person'}) sex?: string;
@@ -23,11 +22,11 @@ export class User {
 
 @InputType()
 export class UserInput{
-	@Field({nullable: true, description: 'Firstnames of the person'}) firstname?: string;
-	@Field({nullable: true, description: 'Lastnames and mother name of the person'}) lastname?: string;
-	@Field({nullable: true, description: 'User nickname to login and navigate'}) username?: string;
-	@Field({nullable: true, description: 'Security password'}) password?: string;
-	@Field({nullable: true, description: 'Contact email'}) email?: string;
+	@Field({nullable: false, description: 'Firstnames of the person'}) firstname?: string;
+	@Field({nullable: false, description: 'Lastnames and mother name of the person'}) lastname?: string;
+	@Field({nullable: false, description: 'User nickname to login and navigate'}) username?: string;
+	@Field({nullable: false, description: 'Security password'}) password?: string;
+	@Field({nullable: false, description: 'Contact email'}) email?: string;
 	@Field({nullable: true, description: 'Birthdate of the person'}) birthdate?: string;
 	@Field({nullable: true, description: 'Oriented sex of the person'}) sex?: string;
 	@Field({nullable: true, description: 'Address information'}) address?: string;
