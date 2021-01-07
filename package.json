@@ -1,12 +1,12 @@
 {
-	"name": "aftim",
+	"name": "ducen-api",
 	"version": "4.0.0",
-	"description": "API de conexion entre las aplicaciones de la suite de administracion y la base de datos madre",
+	"description": "Backend to handler the business of me",
 	"main": "./dist/index.js",
 	"scripts": {
-		"start": "node ./dist/apps/GraphApi/index.js",
-		"serve": "concurrently \"tsc -w -p tsconfig.json\" \"nodemon ./dist/apps/GraphApi/index.js\" ",
-		"deploy": "npm run clean && npm run build && pm2 start ./dist/index.js --name ducen-rest-api",
+		"start": "node ./dist/apps/api/index.js",
+		"serve": "nodemon",
+		"deploy": "npm run clean && npm run build && pm2 start ./dist/index.js --name ducen-api",
 		"clean": "rimraf ./dist",
 		"build": "tsc -p tsconfig.json",
 		"test": "jest --config=jest.config.js ",
@@ -49,7 +49,6 @@
 		"reflect-metadata": "^0.1.13",
 		"rimraf": "^3.0.0",
 		"sequelize": "^6.2.3",
-		"swagger-ui-express": "^4.1.4",
 		"type-graphql": "^1.1.1",
 		"typedi": "^0.8.0",
 		"uuid": "^8.3.0",
@@ -75,7 +74,6 @@
 		"@types/mysql2": "github:types/mysql2",
 		"@types/nodemailer": "^6.4.0",
 		"@types/supertest": "^2.0.8",
-		"@types/swagger-ui-express": "^4.1.2",
 		"@types/uuid": "^8.3.0",
 		"@types/uuid-validate": "0.0.1",
 		"@types/validator": "^13.1.0",
@@ -85,6 +83,8 @@
 		"nodemon": "^2.0.4",
 		"supertest": "^4.0.2",
 		"ts-jest": "^26.4.1",
+		"ts-node": "^9.1.1",
+		"ts-node-dev": "^1.1.1",
 		"typescript": "^4.0.3"
 	}
 }

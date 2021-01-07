@@ -1,4 +1,4 @@
-import { Unauthorized } from "../../../../contexts/shared/domain/Errors";
+import { Forbidden } from "../../../../contexts/shared/domain/Errors";
 import { Inject, Service } from "typedi";
 import { AbilityMaker } from "../domain/Interfaces/AbilityMaker";
 import { Profile } from "../domain/Profile";
@@ -14,6 +14,6 @@ export class PoliciesPermissionsService {
         const abilityOfProfile = this.abilityMaker.buildAbility(profile)
         const allowed = entities.map(entity => this.abilityMaker.checkIfCan(abilityOfProfile, operation, entity)).includes(false);
         if(!allowed) return;
-        throw new Unauthorized(`The user profile: ${profile.name} not have suficent permissions to make ${operation} on the entities: ${entities.join(', ')}`)
+        throw new Forbidden(`The user profile: ${profile.name} not have suficent permissions to make ${operation} on the entities: ${entities.join(', ')}`)
     }
 }

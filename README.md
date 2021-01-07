@@ -30,24 +30,14 @@ run this script to compile the source code and create the dist folder
 
 ```bash
    $ npm start:api
-   $ npm start:data
-   $ npm start:auth
-   $ npm start:file
-   $ npm start:pages
-   $ npm start:nots
 ```
 
 run this script to start the respective microservice
 
--   ### Dev
+-   ### Serve
 
 ```bash
-   $ npm run serve:api
-   $ npm run serve:data
-   $ npm run serve:auth
-   $ npm run serve:file
-   $ npm run serve:pages
-   $ npm run serve:nots
+   $ npm run serve
 ```
 
 run this script to generate a development server that watch the changes on the code
@@ -56,12 +46,6 @@ run this script to generate a development server that watch the changes on the c
 
 ```bash
    $ npm run deploy
-   $ npm run deploy:api
-   $ npm run deploy:data
-   $ npm run deploy:auth
-   $ npm run deploy:file
-   $ npm run deploy:pages
-   $ npm run deploy:nots
 ```
 
 run this script to do the clean, build and start at the same time
@@ -70,39 +54,47 @@ run this script to do the clean, build and start at the same time
 
 ### Authentication
 
-Every call to the api require a header with a token with the developer authorization user and password of the partner.
-The token have the next estructure: <code>{"password" : "123456", "user" : "admin"}</code> and the header's name is <code>x-access-control</code>. This user and pasword will be given to you by de company you work for.
+This API use an baerer toke as authentication method using the JWT standar, you need to append a header "Authorization" to the request on querys or mutations 
+that are protected by user policies, the format of this header is <code lang="js">"Authorization":"sdhfskhglkdnfghlkhsdflkshdkflsdlkfhksldhfknhflkshdflkshd"</code> by example.  
 
 ### Requests
 
-Requests to the server must be made through the URLs: `http://localhost:81/api/${endpint}/?${query}`, each endpoint will be given for the resource they wish to obtain or mutate, for example: `http://localhost:81/api/conceptos/?limit=20&fields=id,nombre`
+Requests to the server must be made through the URLs: `http://localhost:81/api/`, May be Queries or Mutations over the data
 
-#### Query
+### Query
+The queries are selecctions of data over an entity in the system, can search por single objects, collections and nested objects trees
 
--   **fields**: This paramater indicate which of the attributes of the entity are required by the user, separated by comma.
+#### Parameters on queries:
+
 -   **offset**: This parameter indicates the index where the data path begins.
 -   **limit**: This parameter indicates the lenght of the array of data.
 -   **order**: This parameter indicates the order of the array ascendent/descendent.
 -   **orderField**: This parameter indicates the key or field by which the array will be ordered.
--   **before**: it gets concatenated before the filter key field to indicate that the records are less than or equal to the value.
--   **after**: it gets concatenated before the filter key field to indicate that the records are greater than or equal to the value.
 
-## Examples
+#### Example
 
-In this case we'll make a request to the endpoint conceptos, requesting all last 50 concepts and we just want
-the fields: id, nombre, codigo and precio_dolar. With a price greater than $1.5 and less than $10. We can do this because the api identifies the entity's fields and can filter through them, prefixes such as 'before' or 'after' can be used so that the filtering is less than or greater than a value, as many filters can be concatenated as desired.
+In this case we'll make a request to the entity travels, to get travels collection, this will return the last 50 elements on the travels db collection.
 
-Route: `GET: http://localhost:81/api/conceptos/?fields=id,nombre,codigo,precio_dolar&after-precio_dolar=1.5&before-precio_dolar=10`
 
 Code:
 
 ```js
 //Request
-fetch("http://localhost:81/api/conceptos/?fields=id,nombre,codigo,precio_dolar&after-precio_dolar=1.5&before-precio_dolar=10", {
-	method: "GET",
-	headers: {
-		"x-access-control": '{"password" : "123456", "user" : "admin"}',
-	},
+fetch("http://localhost:81/api/", {
+    method: "POST",
+    body:{
+        query:`
+            query{
+                travels{
+                    _id
+                    pasengers
+                    driver
+                    vehicle
+                    route
+                }
+            }
+        `
+    },
 }).then((response) => {
 	var respuesta = JSON.parse(response);
 	console.log(response.data);
@@ -113,61 +105,64 @@ Response:
 
 ```js
         {
-            "totalCount": 6,
-            "count": 4,
             "data": [
                 {
-                    "id": 1,
-                    "nombre": "CARNE DE RES DE PRIMERA",
-                    "codigo": "04010150541",
-                    "precio_dolar": "5.75"
+                    "_id": "454-45sdffasd-asd2wa-123",
+                    "passengers": 35,
+                    "driver": "4584451-werq12-123esfdfg-232re",
+                    "vehicle": "ndi1-2wu9je2e-wneid-2312",
+                    "route": "97-q212er-71e17-dsf21"
                 },
                 {
-                    "id": 3,
-                    "nombre": "PESCADO FRESCO",
-                    "codigo": "27323221122",
-                    "precio_dolar": "1.97"
+                    "_id": "454-45sdffasd-asd2wa-123",
+                    "passengers": 35,
+                    "driver": "4584451-werq12-123esfdfg-232re",
+                    "vehicle": "ndi1-2wu9je2e-wneid-2312",
+                    "route": "97-q212er-71e17-dsf21"
                 },
                 {
-                    "id": 4,
-                    "nombre": "CARNE MOLIDA",
-                    "codigo": "355214235135",
-                    "precio_dolar": "5.03"
-                },
-                {
-                    "id": 5,
-                    "nombre": "CHORIZO POR BULTO",
-                    "codigo": "3573676423",
-                    "precio_dolar": "8.23"
+                    "_id": "454-45sdffasd-asd2wa-123",
+                    "passengers": 35,
+                    "driver": "4584451-werq12-123esfdfg-232re",
+                    "vehicle": "ndi1-2wu9je2e-wneid-2312",
+                    "route": "97-q212er-71e17-dsf21"
                 }
             ],
-            "sig": "http://localhost:81/api/conceptos/?offset=5&limit=4",
-            "prev": "First Page"
         }
 ```
 
-On the other hand we can also do a request to create data, in this case we'll make a group, the optional fields could be guessed
+### Mutations
 
-Route: `POST: http://localhost:81/api/conceptos`
+The mutations alterate the data, create, update and delete operations are in this group of actions, to modify the collections of data
+
+#### Examples
+In this case we`ll make a new travel and recive the created object
 
 Code:
 
 ```js
 // we make the object with the data
 var data = {
-	nombre: "Lacteos",
-	imagen: "default.png",
-	visualizar: 0,
-	posicion: 0,
+    passengers: 64,
+    driver: "4584451-werq12-123esfdfg-232re",
+    vehicle: "ndi1-2wu9je2e-wneid-2312",
+    route: "97-q212er-71e17-dsf21"
 };
 
 //and make the request
-fetch("http://localhost:81/api/conceptos/?fields=id,nombre,codigo,precio_dolar", {
+fetch("http://localhost:81/api/", {
 	method: "POST",
-	headers: {
-		"x-access-control": '{"password" : "123456", "user" : "admin"}',
-	},
-	body: data,
+    body: `
+        mutation{
+            createTravel(newTravel: ${JSON.stringify(data)}){
+                _id
+                pasengers
+                driver
+                vehicle
+                route
+            }
+        }
+    `,
 }).then((response) => {
 	var respuesta = JSON.parse(response);
 	console.log(response.data);
@@ -178,8 +173,13 @@ Response:
 
 ```js
         {
-            "message": "Record created",
-            "link": "http://localhost:81/api/grupos/14"
+            "data":{
+                "_id": "212ee-39j$%1wdfa-lsdkg31-4541",
+                "passengers": 64,
+                "driver": "4584451-werq12-123esfdfg-232re",
+                "vehicle": "ndi1-2wu9je2e-wneid-2312",
+                "route": "97-q212er-71e17-dsf21"
+            }
         }
 ```
 
@@ -203,23 +203,5 @@ Response:
 
 ## Endpoints
 
--   **[Areas de atencion](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/areas_atencion "Areas of atention")**
--   **[Banco](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/banco "Bank")**
--   **[Cambio](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/cambio "Currency")**
--   **[Cargo](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/cargos "Charge")**
--   **[Ciudad](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/ciudad "City")**
--   **[Clientes](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/clientes "Clients")**
--   **[Conceptos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/conceptos "Concepts")**
--   **[Depositos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/depositos "Depositos")**
--   **[Descargos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/descargos "ds")**
--   **[Empresa](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/empresa "Company")**
--   **[Entidad](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/Entidad "Entity")**
--   **[Galeria](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/galeria "Gallery")**
--   **[Grupos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/grupos "Groups")**
--   **[Marcas](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/marcas "Brands")**
--   **[Movimientos de deposito](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/movimiento_depositos "Deposits movements")**
--   **[Pedidos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/pedidos "Orders")**
--   **[Subgrupos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/subgrupos "Subgrupos")**
--   **[Tipos](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/tipos "Types")**
--   **[Unidades](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/unidades "Units")**
--   **[Usuario](https://github.com/Duccem/aftim-rest-api/tree/master/src/components/usuario "User")**
+-   **[Users](https://github.com/Duccem/ducen/tree/master/docs/Users "Users")**
+
