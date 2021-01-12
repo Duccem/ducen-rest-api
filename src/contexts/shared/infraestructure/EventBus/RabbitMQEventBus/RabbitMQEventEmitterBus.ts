@@ -3,9 +3,10 @@ import { DomainEvent } from '../../../domain/DomainEvents/DomainEvent';
 import { DomainEventSubscriber } from '../../../domain/DomainEvents/DomainEventSubscriber';
 
 export class RabbitMQEventEmitterBus {
-	private channel: Channel;
-	constructor(subscribers: Array<DomainEventSubscriber>, channel: Channel) {
-		this.channel = channel;
+	private channel?: Channel;
+	private subscribers: Array<DomainEventSubscriber>;
+	constructor(subscribers: Array<DomainEventSubscriber>) {
+		this.subscribers = subscribers;
 		this.registerSubscribers(subscribers);
 	}
 
@@ -15,16 +16,22 @@ export class RabbitMQEventEmitterBus {
 		});
 	}
 
+	public setChannel(channel: Channel) {
+		this.channel = channel;
+		this.registerSubscribers(this.subscribers);
+	}
+
 	private registerSubscriber(subscriber: DomainEventSubscriber) {
+		if (!this.channel) return;
 		subscriber.subscribedTo().map(async (event) => {
-			await this.channel.assertQueue(event.EVENT_NAME);
-			this.channel.consume(event.EVENT_NAME, (msg) => {
+			await this.channel?.assertQueue(event.EVENT_NAME);
+			this.channel?.consume(event.EVENT_NAME, (msg) => {
 				subscriber.on(event.fromPrimitives(JSON.parse(msg ? (msg.content.toString() as string) : '')));
 			});
 		});
 	}
 
 	public publish(events: DomainEvent[]): void {
-		events.map((event) => this.channel.sendToQueue(event.eventName, Buffer.from(JSON.stringify(event.toPrimitive()))));
+		events.map((event) => this.channel?.sendToQueue(event.eventName, Buffer.from(JSON.stringify(event.toPrimitive()))));
 	}
 }

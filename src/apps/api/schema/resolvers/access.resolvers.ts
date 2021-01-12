@@ -2,7 +2,7 @@
 import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 
 import { User, UserInput } from '../types/user.type';
-import { UserAccessService } from '../../../../contexts/ClientAttention/Users/application/UserAccessService';
+import { UserAccessService } from '../../../../contexts/ClientAttention/Users/services/UserAccessService';
 import { Inject } from 'typedi';
 @Resolver(of => User)
 export class AccessResolver{

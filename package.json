@@ -25,6 +25,7 @@
 		"@casl/ability": "^5.1.2",
 		"amqplib": "^0.6.0",
 		"apollo-server-express": "^2.18.2",
+		"async-redis": "^1.1.7",
 		"axios": "^0.19.2",
 		"bcryptjs": "^2.4.3",
 		"class-validator": "^0.12.2",
@@ -56,6 +57,7 @@
 	},
 	"devDependencies": {
 		"@types/amqplib": "^0.5.13",
+		"@types/async-redis": "^1.1.1",
 		"@types/bcryptjs": "^2.4.2",
 		"@types/continuation-local-storage": "^3.2.2",
 		"@types/cookie-parser": "^1.4.2",

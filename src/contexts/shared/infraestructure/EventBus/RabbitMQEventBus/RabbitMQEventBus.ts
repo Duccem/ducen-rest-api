@@ -7,17 +7,15 @@ import { Logger } from '../../Logger';
 
 export class RabbitMQEventBus implements EventBus {
 	private bus: RabbitMQEventEmitterBus;
-	private connection: Connection;
-	constructor(subscribers: Array<DomainEventSubscriber>, connection: Connection, channel: Channel) {
-		this.bus = new RabbitMQEventEmitterBus(subscribers, channel);
-		this.connection = connection;
+	constructor(subscribers: Array<DomainEventSubscriber>) {
+		this.bus = new RabbitMQEventEmitterBus(subscribers);
 	}
 
-	public static async createConnectionChannel(config: any, logger: Logger): Promise<any> {
+	public async setConnection(config: any, logger: Logger): Promise<any> {
 		let connection = await connect(config.host);
 		let channel = await connection.createChannel();
+		this.bus.setChannel(channel);
 		logger.log(`connected to the host ${config.host}`, { type: 'message', color: 'system' });
-		return { connection, channel };
 	}
 
 	async publish(events: DomainEvent[]): Promise<void> {

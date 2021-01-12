@@ -6,6 +6,7 @@ import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import ducentrace from 'ducentrace';
 import cookieParser from 'cookie-parser';
+import { createClient } from 'async-redis';
 
 //Own imports
 import makeSchema from './schema/schema';
@@ -65,7 +66,7 @@ export class App {
 				introspection: true,
 				formatError: graphQLErrorHandler(this.logger)
 			});
-			server.applyMiddleware({ app: this.app, path: '/graphql' });
+			server.applyMiddleware({ app: this.app, path: '/api/v1' });
 		}).catch((error)=>{
 			console.log(error);
 		})
@@ -83,10 +84,15 @@ export class App {
 	 * Function to start the server
 	 */
 	public listen() {
+		let redisClient = createClient(6379)
+			
 		let server = this.app.listen(this.app.get('port'), '0.0.0.0');
-		server.on('listening', () => {
+		server.on('listening', async () => {
+			await redisClient.setex('ping', 60, 'pong');
 			let address: any = server.address();
 			this.logger.log(`🚀 Listening on http://${address.address}:${address.port}`, { color: 'warning', type: 'server' });
+			let pong = await redisClient.get('ping');
+			console.log(pong)
 		});
 	}
 }
