@@ -17,5 +17,5 @@ export const email = {
 	password: process.env.EMAIL_PASSWORD,
 	port: process.env.EMAIL_PORT
 }
-export const tokenKey = process.env.TOKEN_KEY;
+export const tokenKey = process.env.TOKEN_KEY || "";
 export const port = process.env.PORT;

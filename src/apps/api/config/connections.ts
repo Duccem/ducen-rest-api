@@ -14,10 +14,10 @@ export type Connections = {
 export const connect = (logger: Logger) => async (database: any, queue?: any): Promise<Connections> => {
 	try {
 		let repository = new MongoDBRepoitory(database);
-		let eventBus = new RabbitMQEventBus([]);
-		let eventBus2 = new InMemoryAsyncEventBus([]);
+		//let eventBus = new RabbitMQEventBus([]);
+		let eventBus = new InMemoryAsyncEventBus([]);
 		await repository.setConnection();
-		await eventBus.setConnection(queue, logger);
+		//await eventBus.setConnection(queue, logger);
 		return {
 			repository,
 			eventBus

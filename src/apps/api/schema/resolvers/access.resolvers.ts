@@ -1,9 +1,11 @@
 
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Mutation, Query, Resolver, UseMiddleware } from 'type-graphql';
 
 import { User, UserInput } from '../types/user.type';
 import { UserAccessService } from '../../../../contexts/ClientAttention/Users/services/UserAccessService';
 import { Inject } from 'typedi';
+import { Unauthorized } from '../../../../contexts/shared/domain/Errors';
+import { authChecker } from '../../authMiddlewareTest'
 @Resolver(of => User)
 export class AccessResolver{
     constructor(@Inject("UserAccessService") private readonly userAccessService: UserAccessService){}
@@ -14,8 +16,10 @@ export class AccessResolver{
         return response;
     }
 
+    @UseMiddleware(authChecker)
     @Query(returns => String)
     async chooseProfile(): Promise<string | undefined>{
+        throw new Unauthorized("Error", 400);
         return this.userAccessService.log();
     }
 

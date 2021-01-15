@@ -84,15 +84,12 @@ export class App {
 	 * Function to start the server
 	 */
 	public listen() {
-		let redisClient = createClient(6379)
 			
 		let server = this.app.listen(this.app.get('port'), '0.0.0.0');
 		server.on('listening', async () => {
-			await redisClient.setex('ping', 60, 'pong');
 			let address: any = server.address();
 			this.logger.log(`🚀 Listening on http://${address.address}:${address.port}`, { color: 'warning', type: 'server' });
-			let pong = await redisClient.get('ping');
-			console.log(pong)
+			//console.log(pong)
 		});
 	}
 }

@@ -23,9 +23,7 @@ export class JWTAuth implements Auth {
 	}
 
 	public verifyToken(token: string): AuthPayload {
-		let { id }: any = jwt.verify(token, this.secretKey);
-		return {
-			id,
-		};
+		let userCodifiedToken: any = jwt.verify(token, this.secretKey);
+		return userCodifiedToken;
 	}
 }
