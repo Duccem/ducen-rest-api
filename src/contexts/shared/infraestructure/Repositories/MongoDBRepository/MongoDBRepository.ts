@@ -10,7 +10,7 @@ import { JsonDocument } from '../../../domain/Types/JsonDocument';
 import { Nulleable } from '../../../domain/Types/Nulleable';
 import { DatabaseOptions } from '../../../domain/Types/DatabaseOptions';
 import { ConsulterOptions } from '../../../domain/Types/OptionsRepository';
-import { GeneralError } from '../../../domain/Errors';
+import { GeneralError } from '../../../domain/Errors/Errors';
 import { Logger } from '../../../infraestructure/Logger';
 
 //Own context
@@ -37,7 +37,7 @@ export class MongoDBRepoitory implements Repository {
 				useUnifiedTopology: true,
 				useNewUrlParser: true,
 			});
-			this.logger.log(`connected to ${this.database.database}`, { type: 'database', color: 'system' });
+			this.logger.log(`connected to database: ${this.database.host}/${this.database.database}`, { type: 'database', color: 'system' });
 		} catch (error) {
 			console.log(error);
 			throw new GeneralError('Error on database connection');
@@ -75,12 +75,12 @@ export class MongoDBRepoitory implements Repository {
 	}
 
 	public async update(model: string, id: string, data: any): Promise<any> {
-		let result = await this.getConnection(model).update({ _id: id }, { $set: data });
+		let result = await this.getConnection(model).updateOne({ _id: id }, { $set: data });
 		return result;
 	}
 
 	public async remove(model: string, id: string): Promise<any> {
-		let result = await this.getConnection(model).remove({ _id: id });
+		let result = await this.getConnection(model).deleteOne({ _id: id });
 		return result;
 	}
 

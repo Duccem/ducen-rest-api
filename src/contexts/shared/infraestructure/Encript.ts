@@ -1,4 +1,4 @@
-import { GeneralError } from '../domain/Errors';
+import { GeneralError } from '../domain/Errors/Errors';
 import bcrypt from 'bcryptjs';
 
 /**

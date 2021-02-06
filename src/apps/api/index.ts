@@ -2,7 +2,7 @@ import { App } from './app';
 
 function main() {
 	const app = new App();
-	app.listen();
+	app.bootstrap().then(()=> app.listen())
 }
 
 main();

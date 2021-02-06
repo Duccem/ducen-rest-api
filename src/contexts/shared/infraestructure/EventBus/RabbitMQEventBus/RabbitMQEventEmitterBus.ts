@@ -4,11 +4,8 @@ import { DomainEventSubscriber } from '../../../domain/DomainEvents/DomainEventS
 
 export class RabbitMQEventEmitterBus {
 	private channel?: Channel;
-	private subscribers: Array<DomainEventSubscriber>;
-	constructor(subscribers: Array<DomainEventSubscriber>) {
-		this.subscribers = subscribers;
-		this.registerSubscribers(subscribers);
-	}
+	private subscribers: Array<DomainEventSubscriber> = [];
+	constructor() {}
 
 	public registerSubscribers(subscribers: DomainEventSubscriber[]) {
 		subscribers.map((subscriber) => {
@@ -23,6 +20,7 @@ export class RabbitMQEventEmitterBus {
 
 	private registerSubscriber(subscriber: DomainEventSubscriber) {
 		if (!this.channel) return;
+		this.subscribers.push(subscriber);
 		subscriber.subscribedTo().map(async (event) => {
 			await this.channel?.assertQueue(event.EVENT_NAME);
 			this.channel?.consume(event.EVENT_NAME, (msg) => {

@@ -6,6 +6,8 @@ import fs from "fs-extra";
 const types: any = {
 	server: "[SERVER]",
 	database: "[DATABASE]",
+	cache: "[CACHE]",
+	messageQ: "[MESSAGE QUEUE]",
 	request: "[REQUESTED]",
 	response: "[RESPONSE]",
 	error: "[ERROR]",

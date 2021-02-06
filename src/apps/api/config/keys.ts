@@ -9,7 +9,14 @@ export const database = {
 };
 
 export const messageQ = {
-	host: process.env.MESSAGE_Q_HOST
+	hostname: process.env.MESSAGE_Q_HOST || "",
+	protocol: process.env.MESSAGE_Q_PROTOCOL || "",
+	port: process.env.MESSAGE_Q_PORT as unknown as number || 5672
+}
+
+export const cache = {
+	host: process.env.CACHE_HOST || "",
+	port: process.env.CACHE_PORT as unknown as number
 }
 
 export const email = {

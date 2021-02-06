@@ -10,7 +10,7 @@ import { JsonDocument } from "../../../domain/Types/JsonDocument";
 import { Nulleable } from "../../../domain/Types/Nulleable";
 import { DatabaseOptions } from "../../../domain/Types/DatabaseOptions";
 import { ConsulterOptions } from "../../../domain/Types/OptionsRepository";
-import { GeneralError } from "../../../domain/Errors";
+import { GeneralError } from "../../../domain/Errors/Errors";
 import { Logger } from "../../../infraestructure/Logger";
 
 //Own context

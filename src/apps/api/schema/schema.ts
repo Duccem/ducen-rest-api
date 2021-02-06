@@ -3,11 +3,10 @@ import { buildSchema } from 'type-graphql';
 import { Container } from "typedi";
 import path from 'path';
 import { GraphQLSchema } from "graphql";
-import { authChecker } from '../authMiddlewareTest'
 
 //resolvers 
 import { AccessResolver } from './resolvers/access.resolvers'
-export default async (): Promise<GraphQLSchema> => {
+export const makeSchema = async (): Promise<GraphQLSchema> => {
 	return  await buildSchema({
 		resolvers: [AccessResolver],
 		container: Container,

@@ -6,18 +6,18 @@ import { ApolloServer } from 'apollo-server-express';
 import cors from 'cors';
 import ducentrace from 'ducentrace';
 import cookieParser from 'cookie-parser';
-import { createClient } from 'async-redis';
 
-//Own imports
-import makeSchema from './schema/schema';
+// bootraping functions
+import { connect } from './config/connections';
+import { setContainer } from './config/container';
+import { registerObservers } from './schema/observers/observer';
+import { makeSchema } from './schema/schema';
 
 //Shared context domain implematations
 import { Logger } from '../../contexts/shared/infraestructure/Logger';
-import { graphQLErrorHandler } from '../../contexts/shared/domain/Errors';
-import { connect } from './config/connections';
-import { database } from './config/keys';
-import { setContainer } from './config/container';
-import { registerObservers } from './schema/observers/observer';
+import { GraphErrorHandler } from '../../contexts/shared/infraestructure/Errors/GraphErrorHandler';
+
+
 
 /**
  * Class of the principal application of the server
@@ -39,7 +39,6 @@ export class App {
 		this.app = express();
 		this.logger = new Logger();
 		this.settings();
-		this.middlewares();
 	}
 
 	private settings() {
@@ -52,44 +51,39 @@ export class App {
 		this.app.use(express.json());
 		this.app.use(express.urlencoded({ extended: false }));
 		this.app.use(ducentrace());
-		this.app.use((req, _res, next) => {
-			req.logger = this.logger;
-			next();
-		});
-		this.intialize().then(({ repository, schema })=>{
-			const server = new ApolloServer({
-				schema,
-				context: ({ req }) => {
-					return { req };
-				},
-				playground: true,
-				introspection: true,
-				formatError: graphQLErrorHandler(this.logger)
-			});
-			server.applyMiddleware({ app: this.app, path: '/api/v1' });
-		}).catch((error)=>{
-			console.log(error);
-		})
 	}
 
 	private async intialize(){
-		const { repository, eventBus } = await connect(this.logger)(database)
-		setContainer(repository, eventBus);
+		const connections = await connect(this.logger)
+		setContainer(connections);
 		registerObservers();
 		const schema = await makeSchema();
-		return {repository, schema};
+		return schema;
+	}
+
+	public async bootstrap(){
+		this.middlewares();
+		let schema = await this.intialize()
+		const server = new ApolloServer({
+			schema,
+			context: ({ req }) => {
+				return { req };
+			},
+			playground: true,
+			introspection: true,
+			formatError: GraphErrorHandler
+		});
+		server.applyMiddleware({ app: this.app, path: '/api/v1' });
 	}
 
 	/**
 	 * Function to start the server
 	 */
 	public listen() {
-			
 		let server = this.app.listen(this.app.get('port'), '0.0.0.0');
 		server.on('listening', async () => {
 			let address: any = server.address();
 			this.logger.log(`🚀 Listening on http://${address.address}:${address.port}`, { color: 'warning', type: 'server' });
-			//console.log(pong)
 		});
 	}
 }

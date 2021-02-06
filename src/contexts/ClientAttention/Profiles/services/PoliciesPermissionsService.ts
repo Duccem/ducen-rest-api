@@ -1,4 +1,4 @@
-import { Forbidden } from "../../../../contexts/shared/domain/Errors";
+import { Forbidden } from "../../../shared/domain/Errors/Errors";
 import { Inject, Service } from "typedi";
 import { AbilityMaker } from "../domain/Interfaces/AbilityMaker";
 import { Profile } from "../domain/Profile";

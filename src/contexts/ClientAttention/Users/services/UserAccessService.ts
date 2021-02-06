@@ -1,6 +1,6 @@
 import { User } from '../domain/User';
 import { UserCreatedDomainEvent } from '../domain/DomainEvents/UserCreatedDomainEvent';
-import { BadRequest, Unauthorized } from '../../../shared/domain/Errors';
+import { BadRequest, Unauthorized } from '../../../shared/domain/Errors/Errors';
 import { Repository } from '../../../shared/domain/Repositories/Repository';
 import { UserJsonDocument } from '../domain/Types/UserJsonDocument';
 import { EventBus } from '../../../shared/domain/DomainEvents/EventBus';

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Logger } from '../infraestructure/Logger';
+import { Logger } from '../../infraestructure/Logger';
 import { pick, omit } from 'lodash'
 
 
@@ -50,38 +50,6 @@ export class GeneralError extends Error {
 	}
 }
 
-/**
- * Middleware to handle the global scope error
- * @param err Error object
- * @param req Request express object
- * @param res Response object
- * @param next Next function
- */
-export function expressErrorHandler(err: any, req: Request, res: Response, next: NextFunction): Response {
-	if (err instanceof GeneralError) {
-		if (err.message) req.logger.log(err.getMessage(), { type: 'error', color: 'error' });
-		return res.status(err.getCode()).json({
-			message: err.getMessage(),
-		});
-	}
-	req.logger.log(err.message, { type: 'error', color: 'error' });
-	return res.status(500).json({
-		message: 'Internal Server Error',
-	});
-}
-
-export function graphQLErrorHandler(logger: Logger) {
-	return (error:any) => {
-		error = error.originalError;
-		if (error instanceof GeneralError) {
-			if (error.message) logger.log(`${error.getCode()} ${error.getMessage()}`, { type: 'error', color: 'error' });
-			error = omit(error, 'extensions.exception')
-			return error
-		}
-		logger.log(`500 ${error.message} ${error.extensions.exception}`, { type: 'error', color: 'error' });
-		return omit(new GeneralError('Internal Server Error', 500), 'extensions.exception');
-	}
-}
 
 /**
  * Class to code 400 Invalid ID or BadRequest general
