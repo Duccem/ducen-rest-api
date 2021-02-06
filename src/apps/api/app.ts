@@ -12,6 +12,7 @@ import { connect } from './config/connections';
 import { setContainer } from './config/container';
 import { registerObservers } from './schema/observers/observer';
 import { makeSchema } from './schema/schema';
+import { env } from './config/keys'
 
 //Shared context domain implematations
 import { Logger } from '../../contexts/shared/infraestructure/Logger';
@@ -37,7 +38,10 @@ export class App {
 	 */
 	constructor(private port?: number | string) {
 		this.app = express();
-		this.logger = new Logger();
+		this.logger = new Logger({
+			mode: env || "dev",
+			format: 'utc'
+		});
 		this.settings();
 	}
 

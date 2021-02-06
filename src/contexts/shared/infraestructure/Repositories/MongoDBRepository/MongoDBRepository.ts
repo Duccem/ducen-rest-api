@@ -37,7 +37,7 @@ export class MongoDBRepoitory implements Repository {
 				useUnifiedTopology: true,
 				useNewUrlParser: true,
 			});
-			this.logger.log(`connected to database: ${this.database.host}/${this.database.database}`, { type: 'database', color: 'system' });
+			this.logger.log(`connected to database: ${this.database.host}/${this.database.database}`, { type: 'database', color: 'success' });
 		} catch (error) {
 			console.log(error);
 			throw new GeneralError('Error on database connection');

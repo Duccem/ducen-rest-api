@@ -7,3 +7,4 @@ public/images/*
 package-lock.json
 db.json
 .toDo
+logs/*

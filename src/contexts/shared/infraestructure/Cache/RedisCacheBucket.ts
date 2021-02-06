@@ -13,7 +13,7 @@ export class RedisCacheBucket implements CacheBucket {
     }
     public async setConnection(){
         this.connection = createClient(this.config);
-        this.logger.log(`connected to the cache server:  ${this.config.host}:${this.config.port}`, { type: 'cache', color: 'system' });
+        this.logger.log(`connected to the cache server: ${this.config.host}:${this.config.port}`, { type: 'cache', color: 'error' });
     }
     public async setKey(key: string, val: string, time: number): Promise<boolean> {
         let res =  await this.connection.setex(key, time, val);

@@ -26,3 +26,4 @@ export const email = {
 }
 export const tokenKey = process.env.TOKEN_KEY || "";
 export const port = process.env.PORT;
+export const env = process.env.NODE_ENV

@@ -1,4 +1,4 @@
-import { RequestTokenized } from '../../../../apps/api/authMiddlewareTest'
+import { RequestTokenized } from '../../../shared/domain/Auth/IResquest'
 import { NextFunction, Response } from 'express'
 import { ErrorHandler } from '../../domain/Errors/ErrorHandler'
 import { GeneralError } from '../../domain/Errors/Errors';

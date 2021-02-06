@@ -4,11 +4,11 @@
 	"description": "Backend to handler the business of me",
 	"main": "./dist/index.js",
 	"scripts": {
-		"start": "node ./dist/apps/api/index.js",
+		"start": "cross-env NODE_ENV=prod node ./dist/apps/api/index.js",
 		"serve": "nodemon",
 		"deploy": "npm run clean && npm run build && pm2 start ./dist/index.js --name ducen-api",
 		"clean": "rimraf ./dist",
-		"build": "tsc -p tsconfig.json",
+		"build": " tsc -p tsconfig.json",
 		"test": "jest --config=jest.config.js ",
 		"postinstall": "npm run build"
 	},

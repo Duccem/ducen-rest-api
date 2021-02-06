@@ -19,7 +19,7 @@ export class RabbitMQEventBus implements EventBus {
 		let connection = await connect(this.messageQ);
 		let channel = await connection.createChannel();
 		this.bus.setChannel(channel);
-		this.logger.log(`connected to the message queue server:  ${this.messageQ.protocol}:${this.messageQ.hostname}:${this.messageQ.port}`, { type: 'messageQ', color: 'system' });
+		this.logger.log(`connected to the message queue server: ${this.messageQ.protocol}:${this.messageQ.hostname}:${this.messageQ.port}`, { type: 'messageQ', color: 'system' });
 	}
 
 	async publish(events: DomainEvent[]): Promise<void> {

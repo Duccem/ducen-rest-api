@@ -1,5 +1,6 @@
 import moment from "moment";
 import fs from "fs-extra";
+import path from 'path'
 /**
  * cont types of logers
  */
@@ -156,7 +157,11 @@ export class Logger {
 	 * @param message string to write
 	 */
 	protected fileWrite(message: any) {
-		let file = fs.createWriteStream(__dirname + "projectlogs.log", { flags: "a" });
+		const date = new Date()
+		const year = date.getFullYear();
+		const month = date.getMonth().toString().length < 2 ? '0'+date.getMonth().toString() : date.getMonth()
+		const day = date.getDay().toString().length < 2 ? '0'+date.getDay().toString() : date.getDay()
+		let file = fs.createWriteStream(path.resolve(process.cwd(),`logs/${year}-${month}-${day}.log`), { flags: "a" });
 		file.write(message + "\n");
 	}
 
